@@ -12,10 +12,20 @@ export default function Home({ allPostsData }) {
         <title>{siteTitle}</title>
       </Head>
       <section className={utilStyles.headingMd}>
-        <p>[Your Self Introduction]</p>
         <p>
-          (This is a sample website - you’ll be building a site like this on{' '}
-          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
+          Hi, I'm Tom, an apprentice Software Craftsman from London.
+          I've been programming for 3 years since an inspiring bootcamp at <a href="https://makers.tech/">Makers</a>.
+          I enjoyed working with Ruby and am now loving Java!
+        </p>
+        <p>
+          I follow best practices for web development and have been praised for my strong communication skills, diligence and team work.
+        </p>
+        <p>
+          I love working with HTTP, CI, Cloud, Craftsmanship and working to build a great team.
+        </p>
+        <p>
+          I am keen craftsman and enjoy coding katas, algorithms and building projects.
+          I also like spending time with my wife, playing the trumpet and reading books.
         </p>
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
