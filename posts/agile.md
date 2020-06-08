@@ -1,6 +1,6 @@
 ---
 title: 'Agile, Software Craftsmanship and Extreme Programming'
-date: '2020-01-01'
+date: '2020-06-08'
 ---
 
 #### Agile
