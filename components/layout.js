@@ -29,7 +29,7 @@ export default function Layout({ children, home }) {
           <>
             <img
               src="/images/profile.jpg"
-              className={`${styles.headerHomeImage} ${utilStyles.borderCircle}`}
+              className="rounded-full w-56 h-56 block mx-auto shadow-soft"
               alt={name}
             />
             <h1 className={utilStyles.heading2Xl}>{name}</h1>
@@ -40,7 +40,7 @@ export default function Layout({ children, home }) {
               <a>
                 <img
                   src="/images/profile.jpg"
-                  className={`${styles.headerImage} ${utilStyles.borderCircle}`}
+                  className="rounded-full w-56 h-56 block mx-auto shadow-soft"
                   alt={name}
                 />
               </a>
