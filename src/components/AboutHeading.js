@@ -12,7 +12,7 @@ export default function AboutHeading({ imgSrc }) {
           <CustomLink href="https://www.linkedin.com/in/tom-spencer/">
             For 4 years,
           </CustomLink>{' '}
-          I've been helping SMEs build business online.
+          I've been helping SMEs build their businesses online.
         </p>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl">
           I am a self-taught developer {' '}
