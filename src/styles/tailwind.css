@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-Light.woff2') format('woff2'),
+      url('/fonts/MessinaSans-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-LightItalic.woff2') format('woff2'),
+      url('/fonts/MessinaSans-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-Regular.woff2') format('woff2'),
+      url('/fonts/MessinaSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-RegularItalic.woff2') format('woff2'),
+      url('/fonts/MessinaSans-RegularItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-SemiBold.woff2') format('woff2'),
+      url('/fonts/MessinaSans-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-SemiBoldItalic.woff2') format('woff2'),
+      url('/fonts/MessinaSans-SemiBoldItalic.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-Bold.woff2') format('woff2'),
+      url('/fonts/MessinaSans-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-BoldItalic.woff2') format('woff2'),
+      url('/fonts/MessinaSans-BoldItalic.woff') format('woff');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-Black.woff2') format('woff2'),
+      url('/fonts/MessinaSans-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Messina Sans';
+    src: url('/fonts/MessinaSans-BlackItalic.woff2') format('woff2'),
+      url('/fonts/MessinaSans-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+  }
+  html {
+    min-width: 360px;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200
+  }
+  
+  #__next {
+    min-height: 100vh;
+  }
+
+  .link-underline {
+    @apply text-gray-800 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-200;
+    position: relative;
+    padding-bottom: 2px;
+  }
+  .link-underline::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    @apply bg-indigo-500 dark:bg-gray-200;
+    transform-origin: bottom right;
+    transform: scaleX(0);
+    transition: transform 0.5s ease;
+  }
+  
+  .link-underline:hover::before {
+    transform-origin: bottom left;
+    transform: scaleX(1);
+  }
+}
+
+.social-link {
+  @apply text-gray-600 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-400;
+}
+
+.prose pre {
+  @apply bg-gray-50 border border-gray-200 dark:border-gray-700 dark:bg-gray-900;
+}
+
+.prose code {
+  @apply text-gray-800 dark:text-gray-200 px-1 py-0.5 border border-gray-100 dark:border-gray-800 rounded-md bg-gray-100 dark:bg-gray-900;
+}
+
+.prose img {
+  /* Don't apply styles to next/image */
+  @apply m-0;
+}
+.prose-lg p {
+  margin-top: 8px;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.token.punctuation {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  @apply text-green-500;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  @apply text-violet-500;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  @apply text-yellow-500;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  @apply text-blue-500;
+}
+
+.token.function,
+.token.class-name {
+  @apply text-pink-500;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  @apply text-yellow-500;
+}
+
+code[class*='language-'],
+pre[class*='language-'] {
+  @apply text-gray-800 dark:text-gray-50 text-sm;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
+}
+
+pre {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.remark-code-title {
+  @apply text-gray-800 dark:text-gray-200 px-5 py-3 border border-b-0 border-gray-200 dark:border-gray-700 rounded-t bg-gray-100 dark:bg-gray-800 text-xs font-mono italic;
+}
+
+.remark-code-title + pre {
+  @apply mt-0 rounded-t-none;
+}
