@@ -6,11 +6,9 @@ import CustomLink from '@/components/Link';
 import PostSeo from 'src/components/PostSeo';
 
 const editUrl = (slug) =>
-  `https://github.com/TomSpencerLondon/NextJS-Blog/edit/main/src/data/posts/${slug}.mdx`;
+  `https://github.com/TomSpencerLondon/NextJS-Blog/tree/master/src/data/posts/${slug}.mdx`;
 const discussUrl = (slug) =>
-  `https://mobile.twitter.com/search?q=${encodeURIComponent(
-    `https://tomcraftsman.xyz/posts/${slug}`
-  )}`;
+  `https://mobile.twitter.com/search?q=@tomspencerr`;
 
 export default function PostLayout({ children, frontMatter }) {
   return (
