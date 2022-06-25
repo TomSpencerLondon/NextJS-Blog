@@ -8,7 +8,7 @@ export default function AboutHeading({ imgSrc }) {
       <Image src={imgSrc} width={200} height={200} className="rounded-full mx-auto" />
       <div className="prose prose-indigo prose-lg mx-auto pt-6 md:pt-0 text-center md:text-left">
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl">
-          I'm Tom Spencer, a Software Craftsperson and Business Analyst.{' '}
+          I'm Tom Spencer, a Software Developer and Business Analyst.{' '}
           <CustomLink href="https://www.linkedin.com/in/tom-spencer/">
             For 4 years,
           </CustomLink>{' '}
