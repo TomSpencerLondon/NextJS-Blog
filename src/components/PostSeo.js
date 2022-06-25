@@ -6,14 +6,14 @@ const PostSeo = ({ frontMatter }) => {
       <NextSeo
         title={frontMatter.title}
         description={frontMatter.summary}
-        canonical={`https://tomcraftsman.xyz/posts/${frontMatter.slug}`}
+        canonical={`https://tomspencerlondon.org/posts/${frontMatter.slug}`}
         openGraph={{
-          url: `https://tomcraftsman.xyz/posts/${frontMatter.slug}`,
+          url: `https://tomspencerlondon.org/posts/${frontMatter.slug}`,
           title: `${frontMatter.title}`,
           description: `${frontMatter.summary}`,
           images: [
             {
-              url: `https://tomcraftsman.xyz${frontMatter.image}`,
+              url: `https://tomspencerlondon.org${frontMatter.image}`,
               width: 1200,
               height: 720,
               alt: `Cover image for ${frontMatter.title}`,
@@ -27,9 +27,9 @@ const PostSeo = ({ frontMatter }) => {
         }}
       />
       <ArticleJsonLd
-        url={`https://tomcraftsman.xyz/posts/${frontMatter.slug}`}
+        url={`https://tomspencerlondon.org/posts/${frontMatter.slug}`}
         title={frontMatter.title}
-        images={[`https://tomcraftsman.xyz${frontMatter.image}`]}
+        images={[`https://tomspencerlondon.org${frontMatter.image}`]}
         datePublished={`${frontMatter.publishedAt}`}
         dateModified={`${frontMatter.lastmod}`}
         authorName="Tom Spencer"

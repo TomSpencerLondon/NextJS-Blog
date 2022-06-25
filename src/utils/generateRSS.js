@@ -6,8 +6,8 @@ const matter = require('gray-matter');
 async function generate() {
   const feed = new RSS({
     title: 'Tom Spencer',
-    site_url: 'https://tomcraftsman.xyz',
-    feed_url: 'https://tomcraftsman.xyz/feed.xml',
+    site_url: 'https://tomspencerlondon.org',
+    feed_url: 'https://tomspencerlondon.org/feed.xml',
   });
 
   const posts = await fs.readdir(path.join(__dirname, '..', 'data', 'posts'));
@@ -19,7 +19,7 @@ async function generate() {
 
       feed.item({
         title: frontmatter.data.title,
-        url: 'https://tomcraftsman.xyz/posts/' + name.replace(/\.mdx?/, ''),
+        url: 'https://tomspencerlondon.org/posts/' + name.replace(/\.mdx?/, ''),
         date: frontmatter.data.publishedAt,
         description: frontmatter.data.summary,
       });

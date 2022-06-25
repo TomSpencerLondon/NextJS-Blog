@@ -17,17 +17,17 @@ export default function BlogIndex({ posts }) {
   return (
     <AppContainer>
       <NextSeo
-        title="The Craftsperson papers » Digital Blog"
-        description="Thoughts of Tom Spencer, a Software Craftsperson and Business Analyst."
-        canonical="https://tomcraftsman.xyz/posts/"
+        title="TomSpencerLondon Posts » Digital Blog"
+        description="Thoughts of Tom Spencer, software developer and Business Analyst."
+        canonical="https://tomspencerlondon.org/posts/"
         openGraph={{
-          url: 'https://tomcraftsman.xyz/posts/',
-          title: 'The Craftsperson papers » Digital Blog',
+          url: 'https://tomspencerlondon.org/posts/',
+          title: 'TomSpencerLondon Posts » Digital Blog',
           description:
-            'Thoughts of Tom Spencer, a Software Craftsperson and Business Analyst.',
+            'Thoughts of Tom Spencer, sofware engineer.',
           images: [
             {
-              url: 'https://tomcraftsman.xyz/img/ekom-enyong-header.jpg',
+              url: 'https://tomspencerlondon.org/img/ekom-enyong-header.jpg',
               width: 1200,
               height: 627,
               alt: 'Tom Spencer Cover - Software Craftsperson and Business Analyst',
@@ -41,9 +41,9 @@ export default function BlogIndex({ posts }) {
         }}
       />
       <BlogJsonLd
-        url="https://tomcraftsman.xyz/posts/"
+        url="https://tomspencerlondon.org/posts/"
         title="Thoughts of Tom Spencer"
-        images={['https://tomcraftsman.xyz/img/tom-spencer-headshot.jpg']}
+        images={['https://tomspencerlondon.org/img/tom-spencer-headshot.jpg']}
         datePublished="2020-07-06"
         dateModified="2021-03-09"
         authorName="Tom Spencer"
