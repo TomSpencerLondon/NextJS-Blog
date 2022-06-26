@@ -13,7 +13,7 @@ const PostSeo = ({ frontMatter }) => {
           description: `${frontMatter.summary}`,
           images: [
             {
-              url: `https://tomspencerlondon.org${frontMatter.image}`,
+              url: `https://tomspencerlondon.org/${frontMatter.image}`,
               width: 1200,
               height: 720,
               alt: `Cover image for ${frontMatter.title}`,
@@ -29,7 +29,7 @@ const PostSeo = ({ frontMatter }) => {
       <ArticleJsonLd
         url={`https://tomspencerlondon.org/posts/${frontMatter.slug}`}
         title={frontMatter.title}
-        images={[`https://tomspencerlondon.org${frontMatter.image}`]}
+        images={[`https://tomspencerlondon.org/${frontMatter.image}`]}
         datePublished={`${frontMatter.publishedAt}`}
         dateModified={`${frontMatter.lastmod}`}
         authorName="Tom Spencer"
