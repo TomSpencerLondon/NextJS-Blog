@@ -43,7 +43,7 @@ export default function BlogIndex({ posts }) {
       <BlogJsonLd
         url="https://tomspencerlondon.org/posts/"
         title="Thoughts of Tom Spencer"
-        images={['https://tomspencerlondon.org/img/tom-spencer-headshot.jpg']}
+        images={['https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg']}
         datePublished="2020-07-06"
         dateModified="2021-03-09"
         authorName="Tom Spencer"

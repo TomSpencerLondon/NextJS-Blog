@@ -20,7 +20,7 @@ export default function Header() {
             <a>
               <div className="relative w-10 h-10 cursor-pointer">
                 <Image
-                  src="/img/tom-spencer-headshot.jpg"
+                  src="ekom-enyong"
                   alt="Tom Spencer Headshot"
                   layout="fill"
                   objectFit="cover"
