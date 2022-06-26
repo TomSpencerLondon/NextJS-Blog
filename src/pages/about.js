@@ -19,7 +19,7 @@ export default function AboutPage({ posts }) {
         <h1 className="font-bold text-3xl md:text-5xl mb-1">
           Hi, my name is Tom Spencer <Emoji emoji="👋" />
         </h1>
-        <AboutHeading imgSrc="/img/tom-spencer-headshot.jpg" />
+        <AboutHeading imgSrc="/_next/image?url=%2Fimg%2Ftom-spencer-headshot.jpg&w=3840&q=75" />
         <SectionDivider />
         <h2 className="font-bold text-2xl md:text-4xl tracking-tight mt-4 mb-2">Latest Posts</h2>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl mb-10">
