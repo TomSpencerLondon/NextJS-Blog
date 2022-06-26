@@ -1,0 +1,85 @@
+---
+title: 'Inversion of Control Container'
+date: '2022-06-26'
+---
+
+##### Inversion of Control
+
+Spring IoC (Inversion of Control) Container is the core of the Spring Framework.
+There are two types of containers in Spring - the Bean Factory and the Application Context.
+ApplicationContext is an interface in the org.springframework.context package and is implemented by several classes.
+The ClassPathXmlApplicationContext is one such implementation.
+
+##### Spring BeanFactory
+Here is an overview of the classes provided by the BeanFactory:
+- FileSystemXmlApplicationContext provides beans loaded through the full path.
+- ClassPathXmlApplicationContext provides beans loaded through the CLASSPATH
+- XMLWebApplicationContext and AnnotationConfigWebApplicationContext beans are loaded through the web application context.
+- AnnotationConfigApplicationContext loads Spring beans from Annotation based configuration.
+
+| Spring BeanFactory and Dependent classes|
+|-----------------------------------------|
+|![76plE](https://user-images.githubusercontent.com/27693622/175805274-92de9607-fbc0-4482-a7c6-b5b3c77f5e3c.png)|
+
+##### Bean Factory vs Application Context
+Spring provides two kinds of IOC container: XMLBeanFactory and ApplicationContext. 
+I include an overview of the differences between the two below:
+###### Bean Factory
+- Bean instantiation/wiring
+- Application Context
+###### Application Context
+- Bean instantiation/wiring
+- Automatic BeanPostProcessor registration
+- Automatic BeanFactoryPostProcessor registration
+- Convenient MessageSource access (for i18n)
+- ApplicationEvent publication
+
+|Bean Factory and Application Context |
+|---------------------------------------------------------|
+|![TqcgB](https://user-images.githubusercontent.com/27693622/175805750-1025c69b-1494-4b4e-91c2-66e6c179348a.jpg)|
+
+#### Practice Implementation
+For practice we can build a very simple application using the ClassPathXmlApplicationContext.
+We start with a Salutation interface with a single method message:
+
+![Screenshot 2022-06-26 at 10 09 14](https://user-images.githubusercontent.com/27693622/175807408-d17dc0ac-62c9-4170-8d01-6ab552674a28.png)
+
+We then implement two classes that implement this interface. Hello and Goodbye:
+
+![Screenshot 2022-06-26 at 10 08 55](https://user-images.githubusercontent.com/27693622/175807407-5efab4e4-2b42-4cf1-939a-b8817296eec0.png)
+
+![Screenshot 2022-06-26 at 10 13 37](https://user-images.githubusercontent.com/27693622/175807466-e617d7be-9825-46a0-905c-1000ea766e9b.png)
+
+Next we create a simple Meeting class in order to print out our message: 
+
+![Screenshot 2022-06-26 at 10 10 28](https://user-images.githubusercontent.com/27693622/175807413-70cf6198-e93c-467c-9e46-3380098b6325.png)
+
+This is solid. We may want to avoid using lots of new Hello() instances in our application.
+The Spring ApplicationContext allows us to access a single instance of the Hello class through the 
+ClassPathXmlApplicationContext. Let's look at how to do this.
+
+First add spring-context to our pom.xml so that we have access to the Spring ApplicationContext from
+the Spring Framework.
+
+
+![Screenshot 2022-06-26 at 10 11 24](https://user-images.githubusercontent.com/27693622/175807412-f1c48ec9-8805-44f9-b86d-c1f5a5642c61.png)
+
+Next add a beans.xml file in inversion-of-control/src/main/resources. This will allow us to access the Hello class 
+through the id hello in our Spring ApplicationContext. It helps here to think of the Spring ApplicationContext as a
+map of keys and values where our key is "hello" and the value is the Hello class.
+
+![Screenshot 2022-06-26 at 10 11 40](https://user-images.githubusercontent.com/27693622/175807411-eaa57e68-6ba4-4964-9c4e-53b5bed9bed8.png)
+
+Now we have access to the ApplicationContext through the ClassPathXmlApplicationContext we can get the hello bean
+we have created and access the message:
+
+![Screenshot 2022-06-26 at 10 10 53](https://user-images.githubusercontent.com/27693622/175807409-a55956b7-d12f-41f9-ac9a-c29efe5a679a.png)
+
+We should get the message "Hello!":
+
+
+![Screenshot 2022-06-26 at 10 23 53](https://user-images.githubusercontent.com/27693622/175807819-a6faac91-5fb6-40be-a86f-3655204b877e.png)
+
+##### Extra practice
+- Change the accessed class from Hello to Goodbye and print the message.
+- Code is available here [inversion of control](https://github.com/TomSpencerLondon/spring-practice-examples/tree/main/inversion-of-control)
