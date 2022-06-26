@@ -27,7 +27,7 @@ export default function BlogIndex({ posts }) {
             'Thoughts of Tom Spencer, sofware engineer.',
           images: [
             {
-              url: 'https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg',
+              url: 'https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75',
               width: 1200,
               height: 627,
               alt: 'Tom Spencer Cover - Software Developer and Business Analyst',
@@ -43,7 +43,7 @@ export default function BlogIndex({ posts }) {
       <BlogJsonLd
         url="https://tomspencerlondon.org/posts/"
         title="Thoughts of Tom Spencer"
-        images={['https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg']}
+        images={['https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75']}
         datePublished="2020-07-06"
         dateModified="2021-03-09"
         authorName="Tom Spencer"
