@@ -39,6 +39,8 @@ I include an overview of the differences between the two below:
 |![TqcgB](https://user-images.githubusercontent.com/27693622/175805750-1025c69b-1494-4b4e-91c2-66e6c179348a.jpg)|
 
 #### Practice Implementation
+[![image](https://i3.ytimg.com/vi/Q1puqtAM02M/maxresdefault.jpg)](https://youtu.be/Q1puqtAM02M)
+
 For practice we can build a very simple application using the ClassPathXmlApplicationContext.
 We start with a Salutation interface with a single method message:
 
