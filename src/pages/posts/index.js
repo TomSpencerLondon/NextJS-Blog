@@ -27,7 +27,7 @@ export default function BlogIndex({ posts }) {
             'Thoughts of Tom Spencer, sofware engineer.',
           images: [
             {
-              url: 'https://tomspencerlondon.org/img/ekom-enyong-header.jpg',
+              url: 'https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg',
               width: 1200,
               height: 627,
               alt: 'Tom Spencer Cover - Software Developer and Business Analyst',
