@@ -1,0 +1,96 @@
+---
+title: 'PITest Setup with Maven'
+date: '2022-06-28'
+summary: 'PITest setup with Spring Maven project'
+slug: 'inversion-of-control-container'
+slug: 'pitest-maven'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+
+##### PiTest
+
+PIT provides parallel isolated tests and is useful for Mutation testing on applications to ensure test coverage.
+[<img width="1233" alt="PITest site" src="https://user-images.githubusercontent.com/27693622/176157326-d98bb769-078e-4cf6-8a14-b815c812bc25.png">](https://pitest.org/)
+Mutation testing is a type of Software Testing that is performed to evaluate the quality of an application's test suite.
+Mutation testing involves modifying the program in small ways. The coverage report provided by PITest can help to
+make tests more effective or locate weaknesses in the test data used for the program. In this article we will look at
+how to set up PIT with an existing project.
+
+##### Maven setup
+
+In order to setup the PITest library, we need to include the pitest-maven plugin in our pom.xml for our project:
+
+```xml
+
+<plugins>
+  <plugin>
+    <groupId>org.pitest</groupId>
+    <artifactId>pitest-maven</artifactId>
+    <version>1.7.3</version>
+    <dependencies>
+      <dependency>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-junit5-plugin</artifactId>
+        <version>0.15</version>
+      </dependency>
+    </dependencies>
+  </plugin>
+</plugins>
+```
+
+We can then add specific configuration for our project:
+
+```xml
+
+<plugins>
+  <plugin>
+    <configuration>
+      <failWhenNoMutations>false</failWhenNoMutations>
+      <timestampedReports>false</timestampedReports>
+      <targetClasses>
+        <param>com.example.*</param>
+      </targetClasses>
+      <targetTests>
+        <param>com.example.*</param>
+      </targetTests>
+      <excludedTestClasses>
+        <param>
+          com.example.quiz.HexagonalArchitectureTest
+        </param>
+      </excludedTestClasses>
+      <excludedClasses>
+        <param>com.example.quiz.domain.ResponseId</param>
+      </excludedClasses>
+      <excludedMethods>
+        <param>equals</param>
+        <param>hashCode</param>
+        <param>toString</param>
+      </excludedMethods>
+      <reportsDirectory>${project.basedir}/docs/coverage</reportsDirectory>
+    </configuration>
+  </plugin>
+</plugins>
+```
+Here we have specified the target classes for our project and the tests. We use a glob to specify that we want all
+files in those packages included for PITest. Here, I have added flags for failWhenNoMutations and timeStampedReports
+and set them to false. 
+
+In my project, I have ArchUnit (to be described in a later post) and have opted to exclude these tests with the value
+excludedTestClasses. I have also opted to excluded classes that don't need to be run and excludedMethods for equals,
+hashCode and toString as these functions are Java inbuilt and do not need to be tested.
+
+For reports I have specified the root directory /docs/coverage which is where I store the reports after running the 
+PITest command. The maven command to run PITest is:
+```commandline
+mvn org.pitest:pitest-maven:mutationCoverage
+```
+But it is also possible to run this using the maven goal from IntelliJ like so:
+![Maven goal](https://user-images.githubusercontent.com/27693622/176160100-7ec71b11-dfd0-48f2-94ac-fb84fa0b3f26.png)
+
+#### Test coverage
+Once you have run PITest you are then provided with a test report. I include a viewable test report for my Quiz
+application here:
+[<img width="1233" alt="PITest report" src="https://user-images.githubusercontent.com/27693622/175924939-265713dd-180e-4f57-9f72-8c62948ddfc9.png">](https://htmlpreview.github.io/?https://github.com/TomSpencerLondon/Quiz/blob/main/docs/coverage/index.html)
+
+#### Extra
+Try setting up and running PITest on your own project and then viewing the reports to check coverage.
