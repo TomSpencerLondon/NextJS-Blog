@@ -19,7 +19,7 @@ how to set up PIT with an existing project.
 
 In order to setup the PITest library, we need to include the pitest-maven plugin in our pom.xml for our project:
 
-```
+```xml
 <plugins>
   <plugin>
     <groupId>org.pitest</groupId>
@@ -38,7 +38,7 @@ In order to setup the PITest library, we need to include the pitest-maven plugin
 
 We can then add specific configuration for our project:
 
-```
+```xml
 <plugins>
   <plugin>
     <configuration>
@@ -78,7 +78,7 @@ hashCode and toString as these functions are Java inbuilt and do not need to be 
 
 For reports I have specified the root directory /docs/coverage which is where I store the reports after running the 
 PITest command. The maven command to run PITest is:
-```
+```java
 mvn org.pitest:pitest-maven:mutationCoverage
 ```
 But it is also possible to run this using the maven goal from IntelliJ like so:
