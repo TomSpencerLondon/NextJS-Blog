@@ -6,7 +6,7 @@ slug: 'pitest-maven-setup'
 image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
 ---
 
-##### [PITest](https://pitest.org/)
+#### [PITest](https://pitest.org/)
 
 PIT provides parallel isolated tests and is useful for Mutation testing on applications to ensure test coverage.
 ![pitest](https://user-images.githubusercontent.com/27693622/176157326-d98bb769-078e-4cf6-8a14-b815c812bc25.png)
@@ -15,7 +15,7 @@ Mutation testing involves modifying the program in small ways. The coverage repo
 make tests more effective or locate weaknesses in the test data used for the program. In this article we will look at
 how to set up PIT with an existing project.
 
-##### Maven setup
+#### Maven setup
 
 In order to setup the PITest library, we need to include the pitest-maven plugin in our pom.xml for our project:
 
@@ -69,12 +69,12 @@ We can then add specific configuration for our project:
 </plugins>
 ```
 Here we have specified the target classes for our project and the tests. We use a glob to specify that we want all
-files in those packages included for PITest. Here, I have added flags for failWhenNoMutations and timeStampedReports
+files in those packages included for PITest. I have added flags for **failWhenNoMutations** and **timeStampedReports**
 and set them to false. 
 
-In my project, I have ArchUnit (to be described in a later post) and have opted to exclude these tests with the value
-excludedTestClasses. I have also opted to excluded classes that don't need to be run and excludedMethods for equals,
-hashCode and toString as these functions are Java inbuilt and do not need to be tested.
+In my project, I have **ArchUnit** (to be described in a later post) and have opted to exclude these tests with the configuration
+**excludedTestClasses**. I have also opted to exclude classes that don't need to be run and **excludedMethods** for **equals**,
+**hashCode** and **toString** as these functions are Java inbuilt and do not need to be tested.
 
 For reports I have specified the root directory /docs/coverage which is where I store the reports after running the 
 PITest command. The maven command to run PITest is:
