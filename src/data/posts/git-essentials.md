@@ -184,3 +184,39 @@ you can also run ```git diff --staged``` which compares our staged changes to ou
 The command ```git commit -am "Add git essentials starter"``` adds my new file to my local repository.
 If I want to undo this, I can use ```git restore --staged .``` this will uncommit my file from my local repository.
 
+##### Git history
+We can use the following project to look at git log [rgit](https://github.com/TomSpencerLondon/git-with-ruby).
+To clone the project run:
+```bash
+git clone https://github.com/TomSpencerLondon/git-with-ruby
+```
+When we run git log our outlook looks like the following:
+```bash
+❯ git log                                                                                                                                                                                                                      main rgit
+commit 06b5dfa88210f67bb19e515cfdb0185137cf0ba2 (HEAD -> main, origin/main)
+Author: Tom <thomas.spencer@codurance.com>
+Date:   Wed Jun 29 22:29:40 2022 +0100
+
+    Add rgit-log file
+
+commit 2cc1e405a951b7c6ac5a711c10ac22b352e7d2a0
+Author: Tom <thomas.spencer@codurance.com>
+Date:   Wed Jun 29 22:28:51 2022 +0100
+
+    add rgit library
+
+```
+If we want to undo commits we can use the following commands:
+```bash
+git revert
+git reset
+git restore
+```
+```reset``` wipes out local commits. We do need to be careful with this command as it can lead to lost work.
+There are two options for ```reset``` --HARD and --soft. Hard means that the commits will be wiped from staging.
+Git revert can be used to undo work on a specific commit. Git restore is useful for moving work from staging to local.
+It can then be run again to wipe out the working directory.
+
+#### Extra
+Run these commands on your own local repository and undo local commits with git reset and undo work on staging with git
+restore.
