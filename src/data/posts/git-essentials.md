@@ -157,7 +157,7 @@ Our files, therefore, have a lifecycle:
 
 ![File lifecycle](https://user-images.githubusercontent.com/27693622/176479527-4bd68759-5741-4d88-b588-45ecf523ada2.png)
 
-When we first add a new file, it is untracked. If we add the file to git it is staged. Unmodified files need to changed 
+When we first add a new file, it is untracked. If we add the file to git it is staged. Unmodified files need to changed
 before they can be staged and we can commit files which then moves them to the unmodified state and also remove them from
 git which then leaves them as untracked. We can check the current state of our file directory with the following command:
 ```bash
@@ -181,4 +181,6 @@ In order to stage my changes I will need to run ```git add src/data/posts/git-es
 We can also use ```git diff``` to show the difference between what is in your working directory and your staging area.
 It tells you about the changes you have made which you haven't yet staged. To see what you have staged after ```git add```
 you can also run ```git diff --staged``` which compares our staged changes to our last commit.
+The command ```git commit -am "Add git essentials starter"``` adds my new file to my local repository.
+If I want to undo this, I can use ```git restore --staged .``` this will uncommit my file from my local repository.
 
