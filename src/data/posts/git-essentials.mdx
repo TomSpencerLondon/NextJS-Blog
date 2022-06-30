@@ -71,7 +71,7 @@ You can also check your config with:
 ```bash
 git config --list
 ```
-The command ``git help`` give us a handy list possible git commands:
+The command `git help` gives us a handy list possible git commands:
 ```bash
 These are common Git commands used in various situations:
 
@@ -130,8 +130,8 @@ In order to track an existing directory or project you should navigate to the di
 git init
 ```
 This creates a new subdirectory named .git that contains all the necessary repository files. At this point, we haven't added
-anything to be tracked. In order to track files in your directory you should run ``git add`` and then
-``git commit``:
+anything to be tracked. In order to track files in your directory you should run `git add` and then
+`git commit`:
 ```bash
 git add README.md
 git commit -m "Initial commit"
@@ -144,8 +144,8 @@ git clone https://github.com/git/git
 ```
 This would create a directory named git on your computer, initialize a .git directory inside it and pull down all
 the data for that repository and checkout a working copy of the latest version of git. There are two ways to clone projects.
-In our example we used ``https://`` but it is also possible to use the SSH transfer protocol through
-``git://`` or ``user@server:path/to/repo.git``. We can look at this in a later article.
+In our example we used `https://` but it is also possible to use the SSH transfer protocol through
+`git://` or `user@server:path/to/repo.git`. We can look at this in a later article.
 
 ##### Recording changes
 Now we have a working git repository, we can make changes and commit snapshots of these changes to our repository each time
@@ -177,12 +177,12 @@ Changes not staged for commit:
         modified:   src/data/posts/git-essentials.md
 
 ```
-In order to stage my changes I will need to run ``git add src/data/posts/git-essentials.md``
-We can also use ``git diff`` to show the difference between what is in your working directory and your staging area.
-It tells you about the changes you have made which you haven't yet staged. To see what you have staged after ``git add``
-you can also run ``git diff --staged`` which compares our staged changes to our last commit.
-The command ``git commit -am "Add git essentials starter"`` adds my new file to my local repository.
-If I want to undo this, I can use ``git restore --staged .`` this will uncommit my file from my local repository.
+In order to stage my changes I will need to run `git add src/data/posts/git-essentials.md`
+We can also use `git diff` to show the difference between what is in your working directory and your staging area.
+It tells you about the changes you have made which you haven't yet staged. To see what you have staged after `git add`
+you can also run `git diff --staged` which compares our staged changes to our last commit.
+The command `git commit -am "Add git essentials starter"` adds my new file to my local repository.
+If I want to undo this, I can use `git restore --staged .` this will uncommit my file from my local repository.
 
 ##### Git history
 We can use the following project to look at git log [rgit](https://github.com/TomSpencerLondon/git-with-ruby).
@@ -212,8 +212,8 @@ git revert
 git reset
 git restore
 ```
-``reset`` wipes out local commits. We do need to be careful with this command as it can lead to lost work.
-There are two options for ``reset`` --HARD and --soft. Hard means that the commits will be wiped from staging.
+`reset` wipes out local commits. We do need to be careful with this command as it can lead to lost work.
+There are two options for `reset` --HARD and --soft. Hard means that the commits will be wiped from staging.
 Git revert can be used to undo work on a specific commit. Git restore is useful for moving work from staging to local.
 It can then be run again to wipe out the working directory.
 
