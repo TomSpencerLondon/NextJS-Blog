@@ -1,0 +1,149 @@
+---
+title: 'Spring external configuration'
+date: '2022-07-09'
+summary: 'External configuration with Spring'
+slug: 'spring-external-configuration'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+
+#### Spring External Configuration
+I wanted to share a little experimentation I did with Spring externalized configuration. The idea came when looking at Wim
+Deblauwe's book [Practical Guide to Building an API Back End with Spring Boot](https://www.infoq.com/minibooks/spring-boot-building-api-backend/).
+In his book I was working on the REST API Security chapter and missed a properties value in the **AuthorizationServerConfiguration**
+class. The Spring [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config) 
+lists 14 different ways to configure property values and I found this list a bit overwhelming!
+
+<img width="983" alt="Screenshot 2022-07-09 at 11 42 43" src="https://user-images.githubusercontent.com/27693622/178102390-d37a1576-acaa-4478-b22f-ac19f94fa6cc.png">
+
+These options become available when you add **@ConfigurationProperties** to an existing class in your application.
+So I decided to look at some of the options for a small application to at least get some of the options under my fingers.
+The options I will show you in this article cover the majority of possible use cases. I looked at the following configuration
+options:
+```text
+3. Config data (such as application.properties files)
+5. OS environment variables
+6. Java System properties (System.getProperties())
+11. Command line arguments
+```
+The code for this article is available [here](https://github.com/TomSpencerLondon/spring-config-practice).
+
+First, I built a simple REST controller to print out the Configuration:
+```java
+@RestController
+public class ConfigController {
+
+  private final EmailConfiguration emailConfiguration;
+
+  public ConfigController(EmailConfiguration emailConfiguration) {
+    this.emailConfiguration = emailConfiguration;
+  }
+
+  @GetMapping("/")
+  public String propertiesConfig() {
+    return emailConfiguration.toString();
+  }
+}
+```
+I added the EmailConfiguration class and autowired this class to the controller:
+```java
+@Component
+@ConfigurationProperties(prefix = "config-test.email")
+public class EmailConfiguration {
+
+  @NotBlank
+  private String serverName;
+
+  @Email
+  private String email;
+
+  public String getServerName() {
+    return serverName;
+  }
+
+  public void setServerName(String serverName) {
+    this.serverName = serverName;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  @Override
+  public String toString() {
+    return "EmailConfiguration{" + "serverName='" + serverName + '\'' + ", email='" + email + '\'' + '}';
+  }
+}
+```
+I added a toString method on the EmailConfiguration class to show the values on the endpoint. I also added **@Component** and
+**@ConfigurationProperties(prefix = "config-test.email")**. The **@Component** creates an instance for the controller to autowire.
+The **@ConfigurationProperties** tells the configuration processor that the properties of the class should be made available
+for externalized configuration. The **prefix** annotation value gives a namespace for the properties so the values for the fields.
+We can then run **mvn verify** to package our application to a JAR file.
+
+#### 1. Application Properties
+The values can then be set in the application.properties file like so:
+```bash
+config-test.email.email=tom@email.com
+config-test.email.server-name=smtp.email.com
+```
+We then run our application like so:
+```bash
+ java -jar target/config-test-0.0.1-SNAPSHOT.jar
+```
+And we see in our browser on **localhost:8080**:
+```text
+EmailConfiguration{serverName='smtp.email.com', email='tom@email.com'}
+```
+This means we have successfully referred to our application.properties file to set values in our application. Yay!
+
+#### 2. Java system properties
+We can also set values for the application to read as part of our jar command like so:
+```bash
+java -Dconfig-test.email.email=wim@wim-email.com -Dconfig-test.email.server-name=smtp.wim-email.com -jar target/config-test-0.0.1-SNAPSHOT.jar
+```
+This allows us to set the variables as system properties and the values take precedence over the values set in our application.properties.
+We see the following on the browser on **localhost:8080**:
+```text
+EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+```
+It works. Yay!
+
+#### 3. Command line arguments
+We can also set the correct values as command line arguments when we run our jar file like so:
+```bash
+java -jar target/config-test-0.0.1-SNAPSHOT.jar --config-test.email.email=wim@wim-email.com --config-test.email.server-name=smtp.wim-email.com
+```
+Again we see the correct values in the browser on **localhost:8080**:
+```text
+EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+```
+Success!
+
+#### 4. OS Environment variables
+Finally, we can set the values as environment variables on the machine that we run our application.
+We do this by setting the values as ENV variables on our Operating System. I am using [fish shell](https://fishshell.com/)
+so my configuration is slightly different. For normal bash profile we would use **export**.
+```bash
+set -x CONFIGTEST_EMAIL_SERVERNAME smtp.wim-email.com
+set -x CONFIGTEST_EMAIL_EMAIL wim@wim-email.com
+```
+We can check we have set the environment variables correctly with **printenv**:
+```bash
+CONFIGTEST_EMAIL_EMAIL=wim@wim-email.com
+CONFIGTEST_EMAIL_SERVERNAME=smtp.wim-email.com
+```
+Now when we run the jar command:
+```bash
+java -jar target/config-test-0.0.1-SNAPSHOT.jar
+```
+We also see the correct values on **localhost:8080**:
+```text
+EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+```
+
+So there you have it, a little tour of setting values for running spring jar files with external configuration.
+Very useful when we want to set values from outside our application without having to recompile the whole application.
