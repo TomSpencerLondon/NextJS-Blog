@@ -156,7 +156,73 @@ We also see the correct values on **localhost:8080**:
 ![Screenshot 2022-07-09 at 12 53
 52](https://user-images.githubusercontent.com/27693622/178104512-1aef3b85-84d9-4474-bd18-c8a925eb942e.png)
 
-#### Conclusion
 So there you have it, a short tour of setting values for running spring jar files with external configuration.
 Very useful when we want to set values from outside our application without having to recompile the whole
 application.
+
+#### Extra
+We can also add validation for our properties to ensure that we don't miss them out. If we commented out the
+application.properties values like so:
+```bash
+#config-test.email.email=tom@email.com
+#config-test.email.server-name=smtp.email.com
+```
+and failed to set them on our jar command:
+```bash
+java -jar target/config-test-0.0.1-SNAPSHOT.jar
+```
+
+We get **null** values for our EmailConfiguration. This could cause a confusing error when running our application.
+![Screenshot 2022-07-09 at 13 24 35](https://user-images.githubusercontent.com/27693622/178105723-a07f8301-315d-404c-bfed-32f3143a14e0.png)
+
+In order to fail at startup if properties are not set we can add validation to our EmailConfiguration class:
+
+```java
+
+
+@Component
+@ConfigurationProperties(prefix = "config-test.email")
+@Validated
+public class EmailConfiguration {
+
+  @NotBlank
+  private String serverName;
+
+  @Email
+  private String email;
+
+  public String getServerName() {
+    return serverName;
+  }
+
+  public void setServerName(String serverName) {
+    this.serverName = serverName;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  @Override
+  public String toString() {
+    return "EmailConfiguration{" + "serverName='" + serverName + '\'' + ", email='" + email + '\'' + '}';
+  }
+}
+```
+We simply add **@Validated** to our class and **@NotBlank** and **@Email** to the **serverName** and **email** fields in our
+**EmailConfiguration** class.
+This means that we will get a validation error:
+```bash
+
+Binding validation errors on config-test.email
+   - Field error in object 'config-test.email' on field 'serverName': rejected value [null]; codes [NotBlank.config-test.email.serverName,NotBlank.serverName,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [config-test.email.serverName,serverName]; arguments []; default message [serverName]]; default message [must not be blank]
+```
+If we run **mvn verify** without having set the values in our **application.properties** file. We could also set the values through
+the properties arguments we saw above:
+```bash
+mvn verify -Dconfig-test.email.email=wim@wim-email.com -Dconfig-test.email.server-name=smtp.wim-email.com
+```
