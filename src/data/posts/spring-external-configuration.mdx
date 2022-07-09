@@ -95,7 +95,7 @@ We then run our application like so:
  java -jar target/config-test-0.0.1-SNAPSHOT.jar
 ```
 And we see in our browser on **localhost:8080**:
-> EmailConfiguration{serverName='smtp.email.com', email='tom@email.com'}
+![Screenshot 2022-07-09 at 12 52 34](https://user-images.githubusercontent.com/27693622/178104486-83bee90e-8c9b-4070-a73a-dfed92f049ee.png)
 
 This means we have successfully referred to our application.properties file to set values in our application. Yay!
 
@@ -106,7 +106,7 @@ java -Dconfig-test.email.email=wim@wim-email.com -Dconfig-test.email.server-name
 ```
 This allows us to set the variables as system properties and the values take precedence over the values set in our application.properties.
 We see the following on the browser on **localhost:8080**:
-> EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+![Screenshot 2022-07-09 at 12 53 52](https://user-images.githubusercontent.com/27693622/178104512-1aef3b85-84d9-4474-bd18-c8a925eb942e.png)
 
 It works. Yay!
 
@@ -116,7 +116,7 @@ We can also set the correct values as command line arguments when we run our jar
 java -jar target/config-test-0.0.1-SNAPSHOT.jar --config-test.email.email=wim@wim-email.com --config-test.email.server-name=smtp.wim-email.com
 ```
 Again we see the correct values in the browser on **localhost:8080**:
-> EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+![Screenshot 2022-07-09 at 12 53 52](https://user-images.githubusercontent.com/27693622/178104512-1aef3b85-84d9-4474-bd18-c8a925eb942e.png)
 
 Success!
 
@@ -138,7 +138,7 @@ Now when we run the jar command:
 java -jar target/config-test-0.0.1-SNAPSHOT.jar
 ```
 We also see the correct values on **localhost:8080**:
-> EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
+![Screenshot 2022-07-09 at 12 53 52](https://user-images.githubusercontent.com/27693622/178104512-1aef3b85-84d9-4474-bd18-c8a925eb942e.png)
 
 #### Conclusion
 So there you have it, a little tour of setting values for running spring jar files with external configuration.
