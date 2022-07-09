@@ -215,14 +215,13 @@ public class EmailConfiguration {
 ```
 We simply add **@Validated** to our class and **@NotBlank** and **@Email** to the **serverName** and **email** fields in our
 **EmailConfiguration** class.
-This means that we will get a validation error:
+This means that we will get a validation error if we run **mvn verify** without having set the values in our **application.properties** file:
 ```bash
 
 Binding validation errors on config-test.email
    - Field error in object 'config-test.email' on field 'serverName': rejected value [null]; codes [NotBlank.config-test.email.serverName,NotBlank.serverName,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [config-test.email.serverName,serverName]; arguments []; default message [serverName]]; default message [must not be blank]
 ```
-If we run **mvn verify** without having set the values in our **application.properties** file. We could also set the values through
-the properties arguments we saw above:
+We could also set the values as system properties from the command line:
 ```bash
 mvn verify -Dconfig-test.email.email=wim@wim-email.com -Dconfig-test.email.server-name=smtp.wim-email.com
 ```
