@@ -37,13 +37,13 @@ First, I built a simple REST controller to print out the Configuration:
     private final EmailConfiguration emailConfiguration;
 
     public ConfigController(EmailConfiguration emailConfiguration) {
-    this.emailConfiguration = emailConfiguration;
-  }
+      this.emailConfiguration = emailConfiguration;
+    }
 
-  @GetMapping("/")
-  public String propertiesConfig() {
-    return emailConfiguration.toString();
-  }
+    @GetMapping("/")
+    public String propertiesConfig() {
+      return emailConfiguration.toString();
+    }
 }
 ```
 I added the EmailConfiguration class and autowired this class to the controller:
