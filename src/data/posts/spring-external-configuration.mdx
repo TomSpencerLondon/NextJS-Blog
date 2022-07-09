@@ -19,7 +19,7 @@ These options become available when you add **@ConfigurationProperties** to an e
 So I decided to look at some of the options for a small application to at least get some of the options under my fingers.
 The options I will show you in this article cover the majority of possible use cases. I looked at the following configuration
 options:
-```text
+```
 3. Config data (such as application.properties files)
 5. OS environment variables
 6. Java System properties (System.getProperties())
@@ -95,7 +95,7 @@ We then run our application like so:
  java -jar target/config-test-0.0.1-SNAPSHOT.jar
 ```
 And we see in our browser on **localhost:8080**:
-```text
+```
 EmailConfiguration{serverName='smtp.email.com', email='tom@email.com'}
 ```
 This means we have successfully referred to our application.properties file to set values in our application. Yay!
@@ -107,7 +107,7 @@ java -Dconfig-test.email.email=wim@wim-email.com -Dconfig-test.email.server-name
 ```
 This allows us to set the variables as system properties and the values take precedence over the values set in our application.properties.
 We see the following on the browser on **localhost:8080**:
-```text
+```
 EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
 ```
 It works. Yay!
@@ -118,7 +118,7 @@ We can also set the correct values as command line arguments when we run our jar
 java -jar target/config-test-0.0.1-SNAPSHOT.jar --config-test.email.email=wim@wim-email.com --config-test.email.server-name=smtp.wim-email.com
 ```
 Again we see the correct values in the browser on **localhost:8080**:
-```text
+```
 EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
 ```
 Success!
@@ -141,7 +141,7 @@ Now when we run the jar command:
 java -jar target/config-test-0.0.1-SNAPSHOT.jar
 ```
 We also see the correct values on **localhost:8080**:
-```text
+```
 EmailConfiguration{serverName='smtp.wim-email.com', email='wim@wim-email.com'}
 ```
 
