@@ -1,0 +1,160 @@
+---
+title: 'Solutions Architect Associate Overview'
+date: '2022-05-22'
+---
+
+Hey fellow AWS Cloud Builders! This is an overview of 30 services covered by the AWS Solutions
+Architect Associate exam. If you would like an introduction to this exam check out my [Solutions Architect Associate Overview](https://tomspencerlondon.com/posts/solutions-architect-associate-intro)
+
+### 1. Identity Access Management (IAM)
+
+IAM Entities:
+Users - any individual end user such as an employee, system architect, CTO, etc.
+
+Groups - any collection of similar people with shared permissions such as system administrators, HR employees, finance teams, etc. Each user within their specified group will inherit the permissions set for the group.
+
+Roles - any software service that needs to be granted permissions to do its job, e.g- AWS Lambda needing write permissions to S3 or a fleet of EC2 instances needing read permissions from a RDS MySQL database.
+
+Policies - the documented rule sets that are applied to grant or limit access. In order for users, groups, or roles to properly set permissions, they use policies. Policies are written in JSON and you can either use custom policies for your specific needs or use the default policies set by AWS.
+
+![IAM Identities](https://user-images.githubusercontent.com/27693622/195705967-a6ac3a13-e029-4a92-bbff-9f5818249a8d.png)
+
+Priority Levels in IAM:
+Explicit Deny: Denies access to a particular resource and this ruling cannot be overruled.
+
+Explicit Allow: Allows access to a particular resource so long as there is not an associated Explicit Deny.
+
+Default Deny (or Implicit Deny): IAM identities start off with no resource access. Access instead must be granted.
+
+### 2. Simple Storage Service (S3)
+
+S3 provides developers and IT teams with secure, durable, and highly-scalable object storage.
+Object storage, as opposed to block storage, is a general term that refers to data composed of three things:
+
+1.) the data that you want to store
+
+2.) an expandable amount of metadata
+
+3.) a unique identifier so that the data can be retrieved
+
+### 3. CloudFront
+
+The AWS CDN service is called CloudFront. It serves up cached content and assets for the increased global performance of your application.
+The main components of CloudFront are the edge locations (cache endpoints), the origin (original source of truth to be cached such as an EC2 instance, an S3 bucket, an Elastic Load Balancer or a Route 53 config), and the distribution (the arrangement of edge locations from the origin or basically the network itself).
+[Amazon CloudFront Key Features](https://aws.amazon.com/cloudfront/features/?whats-new-cloudfront.sort-by=item.additionalFields.postDateTime&whats-new-cloudfront.sort-order=desc)
+
+### 4. Snowball
+
+Snowball is a giant physical disk that is used for migrating high quantities of data into AWS. It is a peta-byte scale data transport solution. Using a large disk like Snowball helps to circumvent common large scale data transfer problems such as high network costs, long transfer times, and security concerns. Snowballs are extremely secure by design and once the data transfer is complete, the snowballs are wiped clean of your data.
+![Snowball data quantities](https://user-images.githubusercontent.com/27693622/195706738-5346c138-8058-4f64-a90c-d43fc28a23a2.png)
+
+### 5. Storage Gateway
+
+Storage Gateway is a service that connects on-premise environments with cloud-based storage in order to seamlessly and securely integrate an on-prem application with a cloud storage backend. and Volume Gateway as a way of storing virtual hard disk drives in the cloud.
+
+### 6. Elastic Compute Cloud (EC2)
+
+EC2 spins up resizable server instances that can scale up and down quickly. An instance is a virtual server in the cloud. With Amazon EC2, you can set up and configure the operating system and applications that run on your instance. Its configuration at launch is a live copy of the Amazon Machine Image (AMI) that you specify when you launched the instance. EC2 has an extremely reduced time frame for provisioning and booting new instances and EC2 ensures that you pay as you go, pay for what you use, pay less as you use more, and pay even less when you reserve capacity. When your EC2 instance is running, you are charged on CPU, memory, storage, and networking. When it is stopped, you are only charged for EBS storage.
+
+![EC2 Lifecycle](https://user-images.githubusercontent.com/27693622/195707242-1658d242-a4aa-4723-a2f6-3151c9c396e3.png)
+
+### 7. Elastic Block Store (EBS)
+
+An Amazon EBS volume is a durable, block-level storage device that you can attach to a single EC2 instance. You can think of EBS as a cloud-based virtual hard disk. You can use EBS volumes as primary storage for data that requires frequent updates, such as the system drive for an instance or storage for a database application. You can also use them for throughput-intensive applications that perform continuous disk scans.
+![EBS](https://user-images.githubusercontent.com/27693622/195707548-08b43c57-cfa1-4988-b5ca-01f29e5f61ca.png)
+
+### 8. Elastic Network Interfaces (ENI)
+
+An elastic network interface is a networking component that represents a virtual network card. When you provision a new instance, there will be an ENI attached automatically and you can create and configure additional network interfaces if desired. When you move a network interface from one instance to another, network traffic is redirected to the new instance.
+
+### 9. Security Groups
+
+Security Groups are used to control access (SSH, HTTP, RDP, etc.) with EC2. They act as a virtual firewall for your instances to control inbound and outbound traffic. When you launch an instance in a VPC, you can assign up to five security groups to the instance and security groups act at the instance level, not the subnet level.
+
+### 10. CloudWatch
+
+Amazon CloudWatch is a monitoring and observability service. It provides you with data and actionable insights to monitor your applications, respond to system-wide performance changes, optimize resource utilization, and get a unified view of operational health.
+
+### 11. CloudTrail
+AWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account. With it, you can log, continuously monitor, and retain account activity related to actions across your AWS infrastructure. CloudTrail provides event history of your AWS account activity, including actions taken through the AWS Management Console, AWS SDKs, command line tools, API calls, and other AWS services. It is a regional service, but you can configure CloudTrail to collect trails in all regions.
+
+### 12. Elastic File System (EFS)
+
+EFS provides a simple and fully managed elastic NFS file system for use within AWS. EFS automatically and instantly scales your file system storage capacity up or down as you add or remove files without disrupting your application.
+
+### 13. Amazon FSx for Lustre
+
+Amazon FSx for Lustre makes it easy and cost effective to launch and run the open source Lustre file system for high-performance computing applications. With FSx for Lustre, you can launch and run a file system that can process massive data sets at up to hundreds of gigabytes per second of throughput, millions of IOPS, and sub-millisecond latencies.
+
+### 14. Relational Database Service (RDS)
+
+RDS is a managed service that makes it easy to set up, operate, and scale a relational database in AWS. It provides cost-efficient and resizable capacity while automating or outsourcing time-consuming administration tasks such as hardware provisioning, database setup, patching and backups.
+Supported databases include:
+- SQL Server
+- Oracle
+- MySQL Server
+- PostgreSQL
+- MariaDB
+- Aurora
+
+### 15. Aurora
+
+Aurora is the AWS flagship DB known to combine the performance and availability of traditional enterprise databases with the simplicity and cost-effectiveness of open source databases. It is a MySQL/PostgreSQL-compatible RDBMS that provides the security, availability, and reliability of commercial databases at 1/10th the cost of competitors. It is far more effective as an AWS database due to the 5x and 3x performance multipliers for MySQL and PostgreSQL respectively.
+
+### 16. DynamoDB
+
+Amazon DynamoDB is a key-value and document database that delivers single-digit millisecond performance at any scale. It's a fully managed, multiregion, multimaster, durable non-SQL database. It comes with built-in security, backup and restore, and in-memory caching for internet-scale applications.
+
+### 17. Redshift
+
+Amazon Redshift is a fully managed, petabyte-scale data warehouse service in the cloud. The Amazon Redshift service manages all of the work of setting up, operating, and scaling a data warehouse. These tasks include provisioning capacity, monitoring and backing up the cluster, and applying patches and upgrades to the Amazon Redshift engine.
+
+### 19. ElastiCache
+
+The ElastiCache service makes it easy to deploy, operate, and scale an in-memory cache in the cloud. It helps you boost the performance of your existing databases by retrieving data from high throughput and low latency in-memory data stores.
+
+![ElastiCache - redis and memcache](https://user-images.githubusercontent.com/27693622/195708631-49447e9c-676c-4f5a-876b-9823a7e05aac.png)
+
+### 20. Route53
+Amazon Route 53 is a highly available and scalable Domain Name System (DNS) service. You can use Route 53 to perform three main functions in any combination: domain registration, DNS routing, and health checking.
+
+### 21. Elastic Load Balancers (ELB)
+
+Elastic Load Balancing automatically distributes incoming application traffic across multiple targets, such as Amazon EC2 instances, Docker containers, IP addresses, and Lambda functions. It can handle the varying load of your application traffic in a single Availability Zone or across multiple Availability Zones. Elastic Load Balancing offers three types of load balancers that all feature the high availability, automatic scaling, and robust security necessary to make your applications fault tolerant.
+
+### 22. Auto Scaling
+
+AWS Auto Scaling lets you build scaling plans that automate how groups of different resources respond to changes in demand. You can optimize availability, costs, or a balance of both. AWS Auto Scaling automatically creates all of the scaling policies and sets targets for you based on your preference.
+
+![Auto Scaling](https://user-images.githubusercontent.com/27693622/195708962-a2f3f045-5de9-4d55-baef-daf9c6bc1199.png)
+
+### 23. Virtual Private Cloud (VPC)
+
+VPC lets you provision a logically isolated section of the AWS cloud where you can launch services and systems within a virtual network that you define. By having the option of selecting which AWS resources are public facing and which are not, VPC provides much more granular control over security.
+
+![Example VPC](https://user-images.githubusercontent.com/27693622/195709101-c252b4a6-e010-4b6c-a4db-0621c2be02b6.png)
+
+### 24. Simple Queuing Service (SQS)
+
+SQS is a web-based service that gives you access to a message queue that can be used to store messages while waiting for a queue to process them. It helps in the decoupling of systems and the horizontal scaling of AWS resources.
+
+### 25. Simple Workflow Service (SWF)
+
+SWF is a web service that makes it easy to coordinate work across distributed application components. SWF has a range of use cases including media processing, web app backend, business process workflows, and analytical pipelines.
+
+### 26. Simple Notification Service (SNS)
+
+Simple Notification Service is a pushed-based messaging service that provides a highly scalable, flexible, and cost-effective method to publish a custom messages to subscribers who wish to be informed about a certain topic.
+
+### 27. Kinesis
+Amazon Kinesis makes it easy to collect, process, and analyze real-time, streaming data so you can get timely insights and react quickly to new information. With Amazon Kinesis, you can ingest real-time data such as video, audio, application logs, website clickstreams, and IoT telemetry data for machine learning, analytics, and other applications. Amazon Kinesis enables you to process and analyze data as it arrives and respond instantly instead of having to wait until all your data is collected before the processing can begin.
+
+### 28. API Gateway
+API Gateway is a fully managed service for developers that makes it easy to build, publish, manage, and secure entire APIs. With a few clicks in the AWS Management Console, you can create an API that acts as a “front door” for applications to access data, business logic, or functionality from your back-end services, such as workloads running on EC2) code running on AWS Lambda, or any web application.
+
+### 29. CloudFormation
+
+CloudFormation is an automated tool for provisioning entire cloud-based environments. It is similar to Terraform where you codify the instructions for what you want to have inside your application setup (X many web servers of Y type with a Z type DB on the backend, etc). It makes it a lot easier to just describe what you want in markup and have AWS do the actual provisioning work involved.
+
+### 30. ElasticBeanstalk
+ElasticBeanstalk is another way to script out your provisioning process by deploying existing applications to the cloud. ElasticBeanstalk is aimed toward developers who know very little about the cloud and want the simplest way of deploying their code.
