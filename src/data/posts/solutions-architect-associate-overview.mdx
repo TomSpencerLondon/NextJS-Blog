@@ -4,27 +4,22 @@ date: '2022-05-22'
 ---
 
 Hey fellow AWS Cloud Builders! This is an overview of 30 services covered by the AWS Solutions
-Architect Associate exam. If you would like an introduction to this exam check out my [Solutions Architect Associate Overview](https://tomspencerlondon.com/posts/solutions-architect-associate-intro)
-
+Architect Associate exam. If you would like an introduction to this exam check out my
+[Solutions Architect Associate Overview](https://tomspencerlondon.com/posts/solutions-architect-associate-intro)
 ### 1. Identity Access Management (IAM)
 
 IAM Entities:
-Users - any individual end user such as an employee, system architect, CTO, etc.
+![image](https://user-images.githubusercontent.com/27693622/201437621-9e80c7e8-5256-4dc2-aa2c-4b266027e3a2.png)
 
-Groups - any collection of similar people with shared permissions such as system administrators, HR employees, finance teams, etc. Each user within their specified group will inherit the permissions set for the group.
-
-Roles - any software service that needs to be granted permissions to do its job, e.g- AWS Lambda needing write permissions to S3 or a fleet of EC2 instances needing read permissions from a RDS MySQL database.
-
-Policies - the documented rule sets that are applied to grant or limit access. In order for users, groups, or roles to properly set permissions, they use policies. Policies are written in JSON and you can either use custom policies for your specific needs or use the default policies set by AWS.
-
-![IAM Identities](https://user-images.githubusercontent.com/27693622/195705967-a6ac3a13-e029-4a92-bbff-9f5818249a8d.png)
-
-Priority Levels in IAM:
-Explicit Deny: Denies access to a particular resource and this ruling cannot be overruled.
-
-Explicit Allow: Allows access to a particular resource so long as there is not an associated Explicit Deny.
-
-Default Deny (or Implicit Deny): IAM identities start off with no resource access. Access instead must be granted.
+In the above diagram we can see the main elements of IAM:
+- Identities - used for access to an AWS account
+- Users - Users are the owners of identities
+- Groups - A user group is a collection of IAM users managed as a unit
+- Roles - An identity with permission policies that determine what the identity can do in AWS
+- Credentials - Information owned by the user which is used for identification
+- Permissions - What a user is allowed to do on AWS
+- Policies - A document that determines what actions a user, role or member of a user group can do
+- Statements - A collection of elements allowing users to access AWS resources
 
 ### 2. Simple Storage Service (S3)
 
