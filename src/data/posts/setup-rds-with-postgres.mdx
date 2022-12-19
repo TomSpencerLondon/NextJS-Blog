@@ -44,7 +44,9 @@ Leave everything to default except the SQL Engine, Template, password, and Publi
 
 
 After that click ‘Create database’ and then wait for it to get created.
-After it is created click on the database and then search for Endpoint which is on the ‘Connectivity & security’. (For users who have already created a database on the RDS and want to make it publicly accessible, the only way to do is Create a Snapshot and then restore the database from the Snapshot with publicly accessible ‘Yes’)
+After it is created click on the database and then search for Endpoint which is on the ‘Connectivity & security’.
+  (For users who have already created a database on the RDS and want to make it publicly accessible, the only way to do is Create a Snapshot and then restore the database from the Snapshot with publicly accessible ‘Yes’)
+
 ![rds-password](https://user-images.githubusercontent.com/27693622/208517968-04c8a044-ef9c-46ec-8579-0331061a4212.png)
 
 ![rds-endpoint](https://user-images.githubusercontent.com/27693622/208518039-24331411-0fea-4a0d-94d3-8e1be459e717.png)
@@ -54,7 +56,8 @@ Next set up your postgres connection using the details from your RDS instance.
 <img width="1107" alt="postgres-connection" src="https://user-images.githubusercontent.com/27693622/208518340-a5ebb5d7-aa27-4b29-a048-23a29d5b8c23.png">
 
 You should then be able to do this SQL query to list all users in PostgreSQL.
-```
+
+
   SELECT usename AS role_name,
   CASE
   WHEN usesuper AND usecreatedb THEN
@@ -68,4 +71,4 @@ You should then be able to do this SQL query to list all users in PostgreSQL.
   END role_attributes
   FROM pg_catalog.pg_user
   ORDER BY role_name desc;
-```
+
