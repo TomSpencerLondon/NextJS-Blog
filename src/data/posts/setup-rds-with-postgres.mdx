@@ -35,13 +35,10 @@ You can use the VPC security group that you just created as the security group f
 Next we should go to RDS to set up our database.
 ![rds-engines](https://user-images.githubusercontent.com/27693622/208517435-cd3a1129-eda8-43bb-9bdf-b16ee8b54f5f.png)
 
-<img width="760" alt="Screenshot 2022-12-19 at 20 42 34" src="https://user-images.githubusercontent.com/27693622/208517741-e00819ff-c427-451d-a4f2-cdffd7f4af66.png">
-
 After clicking on RDS, click on “Databases” from the left pane and then click on ‘Create database’.
 Leave everything to default except the SQL Engine, Template, password, and Publicly accessible. Firstly, select the PostgreSQL engine.
 
 ![rds-public-access](https://user-images.githubusercontent.com/27693622/208517889-f9767056-1998-434e-895a-7a099fae8b85.png)
-
 
 After that click ‘Create database’ and then wait for it to get created.
 After it is created click on the database and then search for Endpoint which is on the ‘Connectivity & security’.
@@ -56,8 +53,7 @@ Next set up your postgres connection using the details from your RDS instance.
 <img width="1107" alt="postgres-connection" src="https://user-images.githubusercontent.com/27693622/208518340-a5ebb5d7-aa27-4b29-a048-23a29d5b8c23.png">
 
 You should then be able to do this SQL query to list all users in PostgreSQL.
-
-
+```
   SELECT usename AS role_name,
   CASE
   WHEN usesuper AND usecreatedb THEN
@@ -71,4 +67,5 @@ You should then be able to do this SQL query to list all users in PostgreSQL.
   END role_attributes
   FROM pg_catalog.pg_user
   ORDER BY role_name desc;
+```
 
