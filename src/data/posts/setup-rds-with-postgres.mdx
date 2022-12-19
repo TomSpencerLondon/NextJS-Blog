@@ -53,18 +53,4 @@ Next set up your postgres connection using the details from your RDS instance.
 
 You can then do this query on the database:
 
-```sql
-SELECT usename AS role_name,
- CASE
- WHEN usesuper AND usecreatedb THEN
-  CAST('superuser, create database' AS pg_catalog.text)
- WHEN usesuper THEN
-  CAST('superuser' AS pg_catalog.text)
- WHEN usecreatedb THEN
-  CAST('create database' AS pg_catalog.text)
- ELSE
-  CAST('' AS pg_catalog.text)
- END role_attributes
-FROM pg_catalog.pg_user
-ORDER BY role_name desc;
-```
+![sql-query](https://user-images.githubusercontent.com/27693622/208525301-637f763a-e495-4f57-aa43-88a8990a8499.png)
