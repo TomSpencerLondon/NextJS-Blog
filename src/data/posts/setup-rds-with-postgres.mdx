@@ -1,0 +1,71 @@
+---
+title: 'Set up AWS RDS with Postgres'
+date: '2022-12-19'
+---
+
+Hey fellow AWS Cloud Builders! This is an overview of how to connect to cloud database RDS instance on AWS.
+
+![rds-front](https://user-images.githubusercontent.com/27693622/208445090-2fe302d2-6a18-4f83-921f-96b75a53ef5d.png)
+
+In this article we assume that you have signed up for and logged into AWS.
+
+#### VPC
+VPC security groups provide access to DB instances in a VPC.
+They act as a firewall for the associated DB instance, controlling both inbound and outbound traffic at the DB instance level.
+DB instances are created by default with a firewall and a default security group that protect the DB instance.
+Before you can connect to your DB instance, you must add rules to a security group that enable you to connect.
+
+To create a VPC security group
+ 1.  Sign in to the AWS Management Console and open the Amazon VPC console at https://console.aws.amazon.com/vpc.
+ 2.  Make sure you are in the VPC console, not the RDS console.
+ 3.  In the upper-right corner of the AWS Management Console, choose the AWS Region where you want to create your VPC security group and DB instance. In the list of Amazon VPC resources for that AWS Region, you should see at least one VPC and several subnets. If you don't, you don't have a default VPC in that AWS Region.
+ 4.  In the navigation pane, choose Security Groups.
+ 5.  Choose Create security group.
+ 6.  Thee Create security group page appears.
+ 7.  In Basic details, enter the Security group name and Description. For VPC, choose the VPC that you want to create your DB instance in.
+ 8.  In Inbound rules, choose Add rule.
+  a. For Type, choose Custom TCP.
+  b. For Port range, enter the port value to use for your DB instance.
+  c. For Source, choose a security group name or type the IP address range (CIDR value) from where you access the DB instance. If you choose My IP, this allows access to the DB instance from the IP address detected in your browser.
+9.  If you need to add more IP addresses or different port ranges, choose Add rule and enter the information for the rule.
+10. (Optional) In Outbound rules, add rules for outbound traffic. By default, all outbound traffic is allowed.
+11. Choose Create security group.
+You can use the VPC security group that you just created as the security group for your DB instance when you create it.
+
+Next we should go to RDS to set up our database.
+![rds-engines](https://user-images.githubusercontent.com/27693622/208517435-cd3a1129-eda8-43bb-9bdf-b16ee8b54f5f.png)
+
+<img width="760" alt="Screenshot 2022-12-19 at 20 42 34" src="https://user-images.githubusercontent.com/27693622/208517741-e00819ff-c427-451d-a4f2-cdffd7f4af66.png">
+
+After clicking on RDS, click on “Databases” from the left pane and then click on ‘Create database’.
+Leave everything to default except the SQL Engine, Template, password, and Publicly accessible. Firstly, select the PostgreSQL engine.
+
+![rds-public-access](https://user-images.githubusercontent.com/27693622/208517889-f9767056-1998-434e-895a-7a099fae8b85.png)
+
+
+After that click ‘Create database’ and then wait for it to get created.
+After it is created click on the database and then search for Endpoint which is on the ‘Connectivity & security’. (For users who have already created a database on the RDS and want to make it publicly accessible, the only way to do is Create a Snapshot and then restore the database from the Snapshot with publicly accessible ‘Yes’)
+![rds-password](https://user-images.githubusercontent.com/27693622/208517968-04c8a044-ef9c-46ec-8579-0331061a4212.png)
+
+![rds-endpoint](https://user-images.githubusercontent.com/27693622/208518039-24331411-0fea-4a0d-94d3-8e1be459e717.png)
+
+Next set up your postgres connection using the details from your RDS instance.
+
+<img width="1107" alt="postgres-connection" src="https://user-images.githubusercontent.com/27693622/208518340-a5ebb5d7-aa27-4b29-a048-23a29d5b8c23.png">
+
+You should then be able to do this SQL query to list all users in PostgreSQL.
+```
+  SELECT usename AS role_name,
+  CASE
+  WHEN usesuper AND usecreatedb THEN
+  CAST('superuser, create database' AS pg_catalog.text)
+  WHEN usesuper THEN
+  CAST('superuser' AS pg_catalog.text)
+  WHEN usecreatedb THEN
+  CAST('create database' AS pg_catalog.text)
+  ELSE
+  CAST('' AS pg_catalog.text)
+  END role_attributes
+  FROM pg_catalog.pg_user
+  ORDER BY role_name desc;
+```
