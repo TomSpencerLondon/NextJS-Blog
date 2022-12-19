@@ -51,19 +51,3 @@ After that click ‘Create database’ and then wait for it to get created. Afte
 Next set up your postgres connection using the details from your RDS instance.
 <img width="1107" alt="postgres-connection" src="https://user-images.githubusercontent.com/27693622/208518340-a5ebb5d7-aa27-4b29-a048-23a29d5b8c23.png">
 
-You should then be able to do this SQL query to list all users in PostgreSQL.
-```
-    SELECT usename AS role_name,
-    CASE
-    WHEN usesuper AND usecreatedb THEN
-    CAST('superuser, create database' AS pg_catalog.text)
-    WHEN usesuper THEN
-    CAST('superuser' AS pg_catalog.text)
-    WHEN usecreatedb THEN
-    CAST('create database' AS pg_catalog.text)
-    ELSE
-    CAST('' AS pg_catalog.text)
-    END role_attributes
-    FROM pg_catalog.pg_user
-    ORDER BY role_name desc;
-```
