@@ -52,7 +52,8 @@ Next set up your postgres connection using the details from your RDS instance.
 ![postgres-connection](https://user-images.githubusercontent.com/27693622/208524182-bb2e6ebb-2894-4e8b-b617-adc2843e4075.png)
 
 You can then do this query on the database:
-```
+
+```sql
 SELECT usename AS role_name,
  CASE
  WHEN usesuper AND usecreatedb THEN
