@@ -51,7 +51,10 @@ public class ExternalPropsPropertySourceTestConfig {
 }
 
 ```
-
+**Note**:
+The problem of using @Value in different configuration classes is that it makes it difficult to change them and also hard to tell what property relates to which class. We should rather use @ConfigurationProperties to encapsulate configuration in a separate class and avoid scattering direct dependencies to the configuration files in lots of different places.
+This [article](https://tuhrig.de/why-using-springs-value-annotation-is-bad/) is quite good on the problems with @Value. Also I have done some experiments with @Value [here](https://tomspencerlondon.com/posts/spring-external-configuration).
+For the moment we will just use @Value for this application.
 This refers to testing.properties in the test folder:
 ```properties
 guru.jms.server=10.10.10.123
