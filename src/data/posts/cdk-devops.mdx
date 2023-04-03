@@ -2249,7 +2249,7 @@ class MessagingStack extends Stack {
 ```
 Here we set up the queue and set the Deadletter queue to accept messages after four attempts. We also need to set up
 SQS as a dependency in our build.gradle:
-```gradle
+```bash
   implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
 ```
 We then send the todo with a form on our dashboard:
@@ -2483,7 +2483,7 @@ public class ServiceApp {
 ```
 Spring defines two interfaces for sending emails: MailSender and JavaMailSender. We also add the ses dependency to our
 build.gradle file:
-```gradle
+```bash
   implementation 'io.awspring.cloud:spring-cloud-aws-starter-ses'
 ```
 
