@@ -539,7 +539,7 @@ I can also find the customer:
 
 I then connect to the database and can see the updated tables and the events:
 
-```mysql
+```text
 mysql> show tables;
 +----------------------------+
 | Tables_in_eventuate        |
@@ -945,7 +945,7 @@ This is the sequence diagram for the Money Transfer Service Saga:
 
 
 At the moment the transfers are still in progress:
-```mysql
+```text
 mysql> select * from transfers;
 +----+--------+-----------------+---------------+-------------+
 | id | amount | from_account_id | to_account_id | state       |
