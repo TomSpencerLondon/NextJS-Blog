@@ -312,29 +312,8 @@ created account's customerId.
 
 #### Overview of the saga
 
-```mermaid
----
-title: Saga Choreography
----
+![image](https://user-images.githubusercontent.com/27693622/231995852-394025a4-a317-49a7-bc25-785949f7e0b8.png)
 
-sequenceDiagram
-    autonumber
-    participant Account Service
-    participant Customer Service
-
-    Account Service->> Account Service: createAccount() PENDING_CUSTOMER_VALIDATION
-    Account Service -->> Customer Service: AccountOpenedEvent
-    Customer Service->> Customer Service: validateCustomerId(AccountOpenedEvent)
-
-    alt invalid input
-        Customer Service-->>Account Service: CustomerValidationFailedEvent
-        Account Service->> Account Service: CUSTOMER_VALIDATION_FAILED
-    else valid input
-        Customer Service-->>Account Service: CustomerValidatedEvent
-        Account Service->> Account Service: Account OPEN
-        Note left of Customer Service: Depends on valid customerId
-    end
-```
 
 The above sequence diagram describes the saga:
 1. Account Service creates an Account in the PENDING_CUSTOMER_VALIDATION state
@@ -940,31 +919,8 @@ a command messsage to a participant's command channel. The participant executes 
 to the orchestrator's reply channel. Implementing orchestration-based sagas typically requires a framework but can
 be easier to understand.
 
-```mermaid
----
-title: "Saga Orchestration: Order Service"
----
+![image](https://user-images.githubusercontent.com/27693622/231996087-9a83f249-9ebd-4b95-8d2a-7edbe0e5a70e.png)
 
-sequenceDiagram
-    autonumber
-    participant OrderService
-    participant CreateOrderSaga
-    participant CustomerService
-
-    Order Service-> CreateOrderSaga: create()
-    CreateOrderSaga->> CreateOrderSaga: create() Order PENDING
-    CreateOrderSaga -->> Customer Service: ReserveCreditCommand
-    Customer Service->> Customer Service: reserveCredit(Order)
-
-    alt invalid input
-        Customer Service-->>CreateOrderSaga: CommandReplyOutcome.FAILURE
-        CreateOrderSaga->> CreateOrderSaga: Order REJECTED
-    else valid input
-        Customer Service-->>CreateOrderSaga: CommandReplyOutcome.SUCCESS
-        CreateOrderSaga->> CreateOrderSaga: Order PENDING
-        Note left of Customer Service: Depends on credit available
-    end
-```
 
 #### Implement orchestration-based saga in Money Transfer Service
 The story for this task is:
@@ -979,25 +935,7 @@ There are two parts to this task:
 
 This is the sequence diagram for the Money Transfer Service Saga:
 
-```mermaid
----
-title: "Saga Orchestration: Money Transfer Service"
----
-
-sequenceDiagram
-    autonumber
-    participant MoneyTransferService
-    participant TransferMoneySaga
-    participant MoneyTransferServiceCommandHandlers
-    participant AccountCommandHandlers
-    participant AccountService
-
-    MoneyTransferService--> TransferMoneySaga: createTransferMoneySaga()
-    TransferMoneySaga->> TransferMoneySaga: complete(TransferMoneySagaData)
-    MoneyTransferService --> AccountCommandHandlers: credit(CommandMessage)
-    AccountCommandHandlers--> AccountService: credit()
-    AccountCommandHandlers --> MoneyTransferService: SUCCESS
-```
+![image](https://user-images.githubusercontent.com/27693622/231996314-b68b3e80-1902-4722-bd5e-c1597152207e.png)
 
 ![image](https://user-images.githubusercontent.com/27693622/231465051-0fc8fc72-6391-45ae-a874-733f42efde8c.png)
 
@@ -1232,50 +1170,8 @@ Specifically we are looking at the interactions between:
 - CustomerConfiguration - the @Configuration class that configures OrderHistoryHandlers
 - CustomerServiceProxy - the proxy for the Customer Service
 - ProxyConfiguration - the @Configuration class for the proxies
+![saga-orch-order](https://user-images.githubusercontent.com/27693622/231996822-a8ef050e-6a63-4f05-be72-c4ffaebdc8e0.png)
 
-```mermaid
----
-title: "Saga Orchestration: Get Order History"
----
-
-sequenceDiagram
-    autonumber
-    actor User
-    participant OrderHistoryHandlers
-    participant CustomerServiceProxy
-    participant OrderServiceProxy
-
-    User -> OrderHistoryHandlers: getOrderHistory
-
-    OrderHistoryHandlers-->>CustomerServiceProxy: findCustomerById()
-    alt valid input
-      CustomerServiceProxy->> CustomerServiceProxy: Mono(Id)
-      CustomerServiceProxy--> OrderHistoryHandlers: Mono(Id)
-    else invalid id
-      CustomerServiceProxy->> CustomerServiceProxy: Mono(Empty)
-      CustomerServiceProxy->> OrderHistoryHandlers: Mono(Empty)
-    else unknown service
-      CustomerServiceProxy->> CustomerServiceProxy: Mono("Unknown")
-      CustomerServiceProxy->> OrderHistoryHandlers: Mono("Unknown")
-      Note left of CustomerServiceProxy: Depends on valid customerId and known service
-    end
-
-    OrderHistoryHandlers--> OrderServiceProxy: findOrdersByCustomerId
-    alt valid input
-        OrderServiceProxy->> OrderServiceProxy: status
-        OrderServiceProxy->> OrderServiceProxy: response
-        OrderServiceProxy--> OrderHistoryHandlers: Mono<List<GetOrderResponse>>
-    else invalid id
-        OrderServiceProxy->> OrderServiceProxy: status
-        OrderServiceProxy->> OrderServiceProxy: response
-        OrderServiceProxy--> OrderHistoryHandlers: Mono<Error>
-        Note left of OrderServiceProxy: Depends on status of GetOrderResponse
-    end
-
-    OrderHistoryHandlers->> OrderHistoryHandlers: possibleCustomerAndOrders()
-    OrderHistoryHandlers->> OrderHistoryHandlers: create GetCustomerHistoryResponse(customerId, customerName, customerCreditLimit, List<GetOrderResponse>)
-    OrderHistoryHandlers--> User: GetOrderHistoryResponse
-```
 
 #### API Composition in API Gateway (Part 2)
 In this section we are looking at the API Gateway API composition in the application in this repo:
@@ -1512,34 +1408,7 @@ public class OrderHistoryViewService {
 
 ```
 
-```mermaid
----
-title: "Saga Orchestration: Money Transfer Service"
----
-
-sequenceDiagram
-    autonumber
-    participant OrderHistoryEventConsumer
-    participant OrderHistoryViewService
-    participant CustomerViewRepositoryCustom
-
-    OrderHistoryEventConsumer->> OrderHistoryEventConsumer: customerCreatedEventHandler()
-    OrderHistoryEventConsumer--> OrderHistoryViewService: createCustomer()
-    OrderHistoryViewService--> CustomerViewRepositoryCustom: addCustomer()
-    CustomerViewRepositoryCustomer-->OrderHistoryViewService:
-    OrderHistoryViewService-->OrderHistoryEventConsumer:
-    OrderHistoryEventConsumer->>OrderHistoryEventConsumer: orderCreatedEventHandler()
-    OrderHistoryEventConsumer-->OrderHistoryViewService: addOrder()
-    OrderHistoryViewService-->CustomerViewRepositoryCustom: addOrder()
-    CustomerViewRepositoryCustom-->OrderHistoryViewService:
-    OrderHistoryViewService-->OrderHistoryEventConsumer:
-    OrderHistoryEventConsumer->>OrderHistoryEventConsumer: handleOrderCancelledEvent()
-    OrderHistoryEventConsumer-->OrderHistoryViewService: cancelOrder()
-    OrderHistoryViewService->>OrderHistoryViewService: updateOrderState()
-    OrderHistoryViewService-->CustomerViewRepositoryCustom: updateOrderState()
-    CustomerViewRepositoryCustom-->OrderHistoryViewService:
-    OrderHistoryViewService-->OrderHistoryEventConsumer:
-```
+![saga-orch-money-transfer](https://user-images.githubusercontent.com/27693622/232009263-c0f8792b-908c-4de0-9ecb-46eedfe20716.png)
 
 ### Lab: Implement CQRS
 For this lab we are using the code in this application:

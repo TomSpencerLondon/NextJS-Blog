@@ -1,0 +1,17 @@
+---
+title: "Saga Orchestration: Money Transfer Service"
+---
+
+sequenceDiagram
+autonumber
+participant MoneyTransferService
+participant TransferMoneySaga
+participant MoneyTransferServiceCommandHandlers
+participant AccountCommandHandlers
+participant AccountService
+
+MoneyTransferService--> TransferMoneySaga: createTransferMoneySaga()
+TransferMoneySaga->> TransferMoneySaga: complete(TransferMoneySagaData)
+MoneyTransferService --> AccountCommandHandlers: credit(CommandMessage)
+AccountCommandHandlers--> AccountService: credit()
+AccountCommandHandlers --> MoneyTransferService: SUCCESS

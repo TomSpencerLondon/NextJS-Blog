@@ -1,0 +1,21 @@
+---
+title: Saga Choreography
+---
+
+sequenceDiagram
+autonumber
+participant Account Service
+participant Customer Service
+
+Account Service->> Account Service: createAccount() PENDING_CUSTOMER_VALIDATION
+Account Service -->> Customer Service: AccountOpenedEvent
+Customer Service->> Customer Service: validateCustomerId(AccountOpenedEvent)
+
+alt invalid input
+Customer Service-->>Account Service: CustomerValidationFailedEvent
+Account Service->> Account Service: CUSTOMER_VALIDATION_FAILED
+else valid input
+Customer Service-->>Account Service: CustomerValidatedEvent
+Account Service->> Account Service: Account OPEN
+Note left of Customer Service: Depends on valid customerId
+end

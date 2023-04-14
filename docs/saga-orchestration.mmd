@@ -1,0 +1,23 @@
+---
+title: "Saga Orchestration: Order Service"
+---
+
+sequenceDiagram
+autonumber
+participant OrderService
+participant CreateOrderSaga
+participant CustomerService
+
+Order Service-> CreateOrderSaga: create()
+CreateOrderSaga->> CreateOrderSaga: create() Order PENDING
+CreateOrderSaga -->> Customer Service: ReserveCreditCommand
+Customer Service->> Customer Service: reserveCredit(Order)
+
+alt invalid input
+Customer Service-->>CreateOrderSaga: CommandReplyOutcome.FAILURE
+CreateOrderSaga->> CreateOrderSaga: Order REJECTED
+else valid input
+Customer Service-->>CreateOrderSaga: CommandReplyOutcome.SUCCESS
+CreateOrderSaga->> CreateOrderSaga: Order PENDING
+Note left of Customer Service: Depends on credit available
+end
