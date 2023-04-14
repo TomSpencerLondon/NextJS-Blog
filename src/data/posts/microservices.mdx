@@ -539,7 +539,7 @@ I can also find the customer:
 
 I then connect to the database and can see the updated tables and the events:
 
-```text
+```bash
 mysql> show tables;
 +----------------------------+
 | Tables_in_eventuate        |
@@ -924,7 +924,7 @@ be easier to understand.
 
 #### Implement orchestration-based saga in Money Transfer Service
 The story for this task is:
-```text
+```bash
 As a Customer
 I want to transfer money between two accounts
 So that I can manage my finances
@@ -945,7 +945,7 @@ This is the sequence diagram for the Money Transfer Service Saga:
 
 
 At the moment the transfers are still in progress:
-```text
+```bash
 mysql> select * from transfers;
 +----+--------+-----------------+---------------+-------------+
 | id | amount | from_account_id | to_account_id | state       |
@@ -960,7 +960,7 @@ mysql> select * from transfers;
 We still need to save the changes in the accounts.
 
 Useful docker command:
-```text
+```bash
 kill all running containers with docker kill $(docker ps -q)
 delete all stopped containers with docker rm $(docker ps -a -q)
 ```
@@ -1288,7 +1288,7 @@ Here we replicate the customer credit to the OrderService to avoid having to rel
 #### CQRS implementation
 Here we will look at the implementation of View Order History:
 https://github.com/TomSpencerLondon/customers-and-orders-eventuate
-```text
+```bash
 As a Customer
 I want to view my order history
 So that I can see the status of my orders
