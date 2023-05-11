@@ -1,0 +1,159 @@
+---
+title: 'Azure function with Terraform and Github Actions'
+date: '2023-05-02'
+summary: 'Overview of terraform, Azure, Terraform and Github Actions deployment'
+slug: 'azure-terraform-github-actions'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+
+In this article we will deploy an Azure function app using terraform. This video was quite
+useful:
+https://www.youtube.com/watch?v=PUtLnXCqPVE
+
+This article was also useful on deploying to Azure using Terraform:
+https://www.blendmastersoftware.com/blog/deploying-to-azure-using-terraform-and-github-actions
+
+### Resource group
+The resource group is a container that holds related resources for an Azure solution.
+The resource group can include all the resources for the solution, or only those resources
+that we want to manage as a group.
+
+### Storage Account
+The Azure storage account contains all of our Azure Storage data objects, including blobs,
+file shares, queues, tables, and disks. The storage account provides a unique namespace for our
+Azure Storage data that's accessible from anywhere in the world over HTTP or HTTPS.
+
+#### Github workflows
+Terraform has three stages: init, plan and apply. In the apply stage we deploy the resources.
+This is the terraform-apply file:
+```yaml
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+      ARM_SUBSCRIPTION_ID: ${{secrets.SUBSCRIPTION_ID}}
+      ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+```
+We have to add the secrets for our account to give the github actions permissions to deploy the resources.
+In order to add my azure account to the cli I ran:
+```bash
+pip install azure-cli
+```
+This uses python3 to install the cli.
+
+I also ran:
+```bash
+az login
+```
+
+I then ran the following from my azure command line interface:
+```bash
+tom@tom-ubuntu:~/Projects/azure-practice$ az account list
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "<YOUR home TENANT ID>",
+    "id": "<ACCOUNT ID>",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Azure subscription 1",
+    "state": "Enabled",
+    "tenantId": "<TENANT ID",
+    "user": {
+      "name": "<USER NAME>",
+      "type": "user"
+    }
+  }
+]
+
+```
+
+I then ran the following to get my client id, secret and tenant id for inserting in the github actions configuration:
+```bash
+tom@tom-ubuntu:~/Projects/azure-practice$ az ad sp create-for-rbac --name "sp-hello-azure-tf" --role Contributor --scopes /subscriptions/<ACCOUNT ID> --sdk-auth
+Option '--sdk-auth' has been deprecated and will be removed in a future release.
+Creating 'Contributor' role assignment under scope '/subscriptions/<ACCOUNT ID>'
+The output includes credentials that you must protect. Be sure that you do not include these credentials in your code or check the credentials into your source control. For more information, see https://aka.ms/azadsp-cli
+{
+  "clientId": "<CLIENT ID>",
+  "clientSecret": "<CLIENT SECRET>",
+  "subscriptionId": "<SUBSCRIPTION ID>",
+  "tenantId": "<TENANT ID>",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+
+```
+We insert the above values in our terraform apply and terraform plan stages in the github actions configuration.
+
+### Main.tf
+
+This file contains the backend configuration:
+```yaml
+# ARM provider block -rekhu
+provider "azurerm" {
+  version = "~> 2.40.0"
+  features {}
+}
+# Terraform backend configuration block -precreated
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "rg-cloudquickpocs"
+    storage_account_name = "ccpsazuretf0001"
+    container_name       = "ccpterraformstatefile"
+    key                  = "ccpsterraform.tfstate"
+  }
+}
+```
+These define the resource group storage account and the container.
+
+### AzureFunctionApps
+
+This file creates the resource group for the function and sets the location. We need the resource group for containing our services.
+We give the resource group name and location. We then create a storage account for the configuration of the function.
+This refers to the resource group name and location and sets the account tier.
+
+We then create a storage container which will run the function. We use the key name for creating the container use the same variable for storing the
+information of the container. We make the container private and reference the storage account name.
+
+After storage account is created we add App insight for monitoring of the application.
+
+Next we create a service plan for the app. The app service plan is attached to the function app. The kind of the service plan is FunctionApp.
+
+We create the functionApp on the linux operating system.
+
+Next we create the function app with all the core functionality. The function app consumes all the resources above including the
+resource group, storage account, app service plan and app insights. The function app can run in the python language. As yet we haven't added any code to this
+function. We also give the required parameters for the function app including the name, location, resource group name, service plan id, storage account name
+and storage account access key. The app runs on https on a linux server. We have set the python version to 3.8.
+
+When we push the code to our repository and the GitHub actions run successfully and deploy the function:
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/c2c061d4-41a6-46d4-8786-853ea24f0d4f)
+
+
