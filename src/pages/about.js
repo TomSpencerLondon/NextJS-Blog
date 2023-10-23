@@ -26,7 +26,9 @@ export default function AboutPage({ posts }) {
           Thoughts of Tom Spencer, a Software Developer and Business Analyst.
         </p>
 
-        {posts.slice(0, MAX_DISPLAY).map((frontMatter) => (
+        {posts.sort(
+            (a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt))
+        ).slice(0, MAX_DISPLAY).map((frontMatter) => (
           <BlogCard key={frontMatter.title} date={frontMatter.publishedAt} {...frontMatter} />
         ))}
         <p className="text-center">
