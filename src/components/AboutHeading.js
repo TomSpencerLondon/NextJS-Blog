@@ -15,8 +15,8 @@ export default function AboutHeading({ imgSrc }) {
           I've been helping SMEs build their businesses online.
         </p>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl">
-          I am a self-taught developer {' '}
-          <Emoji emoji="👨‍💻" label="Man working behind a laptop screen" />. I am a lifelong learner with a growth mindset.
+          I am a self-taught engineer {' '}
+          <Emoji emoji="👨‍💻" label="Man working behind a laptop screen" /> and a lifelong learner <Emoji emoji="👨‍🎓" label="A man who is engaged in education" /> with a growth mindset.
         </p>
       </div>
     </div>
