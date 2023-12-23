@@ -1,0 +1,71 @@
+---
+title: 'How to connect securely to an RDS instance running in a private Subnet'
+date: '2023-09-10'
+publishedAt: '2023-09-10'
+summary: 'It is not possible to connect to an RDS instance locally directly, you need to tunnel through an EC2 instance to reach the database securely'
+slug: 'connecting-to-rds-in-private-subnet'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+In this article we will connect to an RDS instance locally using an SSH tunnel. [This](https://youtu.be/ypWzL3PdKx0?si=piXeesMo-KeYPhcu) video was useful.
+
+## Goal
+Need to connect to an RDS instance present within a private subnet, which lacks public accessibility.
+
+## Problem
+A public subnet has a route to an internet gateway configured in its route table. This helps making a connection between the VPC and the internet.
+A private subnet does not have any route to an internet gateway. We cannot access resources within the private subnet from outside the VPC.
+We should not put our RDS instances in public subnets only for the purpose of accessing them because this leads to direct public access of our data which is a security concern.
+However, at times, we may want to access our data locally for debugging purposes. Therefore, we need a mechanism to connect to our database in a private subnet.
+
+## Resolution
+Get along, till end, you will find out.
+
+### Create an EC2 instance
+We need to create an EC2 instance keeping the following features:
+1. Locate the EC2 instance in a public subnet
+2. Make sure it is the same VPC in which we have put the RDS instance
+3. Don't forget to download the .pem file to access the EC2 instance
+4. Associate the EC2 with a security group which has inbound access from anywhere (or at least your own IP)
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/euigi3nmm622iei0uib6.jpeg)
+
+Once you follow above steps, you have a pem file, and an EC2 host, with you, which we are going to utilize later using the universal ec2 user, which is ec2-user.
+
+### Testing local EC2 connection
+To test the local connection to EC2, we are using jetbrains Intellij, and will be following below steps:
+1. Go to data sources and drivers, then the SSH tunnel tab.
+2. Set an SSH configuration, mentioning the
+- EC2 host
+- EC2 user (default user: ec2-user)
+- Select the authentication method as key pair, then locate the pem file we downloaded earlier for EC2 connection.
+- Now, check if correct, by testing connection.
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xp4d4envscphranplykd.png)
+
+Now, we have EC2 securely connected on our local, which we are going to use for connecting with database now.
+
+### Configuring local Database connection
+To connect with DB, again we will use intelliJ IDE. For making connection with the DB, you need following details:
+
+- RDS instance host
+- DB username
+- DB password
+- DB Port
+- DB name
+
+Go to the general tab, enter above details.
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/4qlc6xn2vzgiroyih73v.png)
+
+Once filled, test the connection, if you have followed above steps along with me, we will surely see below prompt.
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9ank1fnydaxm2lc81r3s.png)
+
+
+
+
+
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/4efb17c5-0c2f-49d3-b6b5-07f69b80e442)
+
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/6a8c7fb6-2462-487e-8e95-d7589a2b6691)
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/cbccc26c-526f-4d61-9df7-2f8a613a128c)
+
+
