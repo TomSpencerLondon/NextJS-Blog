@@ -14,7 +14,7 @@ const MAX_DISPLAY = 3;
 export default function AboutPage({ posts }) {
   return (
     <AppContainer>
-      <NextSeo title="Meet Tom Spencer, Software Developer and Business Analyst." />
+      <NextSeo title="Meet Tom Spencer, Software Engineer." />
       <div className="max-w-4xl mx-auto px-4 md:px-0 my-24">
         <h1 className="font-bold text-3xl md:text-5xl mb-1">
           Hi, my name is Tom Spencer <Emoji emoji="👋" />
@@ -23,7 +23,7 @@ export default function AboutPage({ posts }) {
         <SectionDivider />
         <h2 className="font-bold text-2xl md:text-4xl tracking-tight mt-4 mb-2">Latest Posts</h2>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl mb-10">
-          Thoughts of Tom Spencer, a Software Developer and Business Analyst.
+          Thoughts of Tom Spencer, a Software Engineer.
         </p>
 
         {posts.sort(

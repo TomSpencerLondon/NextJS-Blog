@@ -1,22 +1,22 @@
 export default {
-  title: 'Tom Spencer » Software Developer and Business Analyst',
+  title: 'Tom Spencer » Software Engineer',
   titleTemplate: '%s » tomspencerlondon.org',
-  defaultTitle: 'Software Developer and Business Analyst',
+  defaultTitle: 'Software Engineer',
   description:
-    "My name is Tom Spencer and I'm a Softare Developer, Business Analyst and self-taught Next.js developer.",
+    "My name is Tom Spencer and I'm a Software Engineer.",
   noindex: false,
   canonical: 'https://tomspencerlondon.org/',
   locale: 'en_UK',
   openGraph: {
     url: 'https://tomspencerlondon.org/',
-    title: 'Software Developer and Businesss Analyst',
-    description: "My name is Tom Spencer and I'm a Software Developer, Business Analyst and Next.js developer.",
+    title: 'Software Engineer',
+    description: "My name is Tom Spencer and I'm a Software Engineer.",
     images: [
       {
         url: 'https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75',
         width: 1200,
         height: 627,
-        alt: 'tomspencerlondon.org Cover - Software Developer and Business Analyst',
+        alt: 'tomspencerlondon.org Cover - Software Engineer',
       },
     ],
   },

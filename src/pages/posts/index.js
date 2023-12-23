@@ -18,7 +18,7 @@ export default function BlogIndex({ posts }) {
     <AppContainer>
       <NextSeo
         title="TomSpencerLondon Posts » Digital Blog"
-        description="Thoughts of Tom Spencer, software developer and Business Analyst."
+        description="Thoughts of Tom Spencer, Software Engineer."
         canonical="https://tomspencerlondon.org/posts/"
         openGraph={{
           url: 'https://tomspencerlondon.org/posts/',
@@ -30,7 +30,7 @@ export default function BlogIndex({ posts }) {
               url: 'https://tomspencerlondon.org/_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75',
               width: 1200,
               height: 627,
-              alt: 'Tom Spencer Cover - Software Developer and Business Analyst',
+              alt: 'Tom Spencer Cover - Software Engineer',
             },
           ],
         }}
@@ -47,7 +47,7 @@ export default function BlogIndex({ posts }) {
         datePublished="2020-07-06"
         dateModified="2021-03-09"
         authorName="Tom Spencer"
-        description="Thoughts of Tom Spencer, a Software Developer and Business Analyst."
+        description="Thoughts of Tom Spencer, a Software Engineer."
       />
       <div className="max-w-3xl mx-auto px-4 md:px-0 my-24">
         <div className="my-8">
@@ -56,7 +56,7 @@ export default function BlogIndex({ posts }) {
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-200">
             I've always enjoyed learning. I like to write about things I'm doing,
-            learning, or creating. This blog explores the thoughts of a Software Developer and Business Analyst.
+            learning, or creating. This blog explores the thoughts of a Software Engineer.
           </p>
         </div>
         <div className="relative w-full mb-4">

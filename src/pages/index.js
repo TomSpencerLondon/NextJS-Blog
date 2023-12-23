@@ -16,13 +16,13 @@ export default function Home({ posts }) {
     <AppContainer>
       <Hero
         title="Hi, my name is Tom Spencer."
-        subTitle="I'm Tom Spencer, a Software Developer and Business Analyst."
+        subTitle="I'm Tom Spencer, a Software Engineer"
       />
       <SectionDivider />
       <div className="max-w-4xl mx-auto mt-4 mb-10">
         <h2 className="font-bold text-3xl md:text-4xl mb-2 capitalize">Latest Posts</h2>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl">
-          Thoughts of Tom Spencer, a Software Developer and Business Analyst.
+          Thoughts of Tom Spencer, a Software Engineer.
         </p>
       </div>
 
