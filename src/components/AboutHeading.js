@@ -10,7 +10,7 @@ export default function AboutHeading({ imgSrc }) {
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-2xl">
           I'm Tom Spencer, a Software Engineer.{' '}
           <CustomLink href="https://www.linkedin.com/in/tom-spencer/">
-            For 4 years,
+            For 7 years,
           </CustomLink>{' '}
           I've been helping SMEs build their businesses online.
         </p>
