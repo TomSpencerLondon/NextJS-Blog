@@ -112,13 +112,10 @@ Open the Amazon SES console at [https://console.aws.amazon.com/ses/](https://con
 2. **Navigate to Verified Identities:**
 In the navigation pane, under Configuration, choose **Verified identities**.
 
-![Verified Identities](./img/ses-secure-email/image6.png) <!-- You can replace "path/to/screenshot.png" with the actual path to your screenshot or image -->
 
 3. **Enable DKIM Signatures for Your Domain:**
 - Go to the domain that you will be using to send emails from.
 - In the advanced settings, tick the option for **enabled DKIM signatures**.
-
-![Enable DKIM Signatures](./img/ses-secure-email/image2.png) <!-- Replace with the actual path to your screenshot or image -->
 
 4. **Set Up Public Key in DNS:**
 Once DKIM signatures are enabled, you need to set up the public key in your DNS.
@@ -131,13 +128,10 @@ Name: _domainkey.yourdomain.com
 Type: TXT
 Value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."
 ```
-![Enable DKIM Signatures](./img/ses-secure-email/image7.png)
 
 6. **We also need to configure the mail from in our DNS, so that mail from shows owner’s domain name not aws add this as 5th point**
-![Enable DKIM Signatures](./img/ses-secure-email/image10.png)
 
 7. **So here we got all the record sets in place.**
-![Enable DKIM Signatures](./img/ses-secure-email/image4.png)
 
 After the DKIM is configured we will configure SPF now.
 
@@ -185,9 +179,9 @@ Value: "v=spf1 include:_spf.example.com ip4:192.168.0.1 -all"
 ```
 
 1. **Create an SPF format.**
-![Creating SPF](./img/ses-secure-email/image3.png)
+
 2. **Enter this as value for DNS with Simple type Routing Policy**
-![Creating SPF](./img/ses-secure-email/image11.png)
+
 
 ## Configuring DMARC Policies
 
@@ -218,10 +212,9 @@ Name: _dmarc.yourdomain.com
 Type: TXT
 Value: "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; ruf=mailto:dmarc@example.com"
 ```
+
 We can generate a value for the DMARC record set on this site [powerdmarc](https://powerdmarc.com/dmarc-record-generator/)
-![Value for DMARC](./img/ses-secure-email/image12.png)
-![Value for DMARC](./img/ses-secure-email/image5.png)
-![Value for DMARC](./img/ses-secure-email/image1.png)
+
 
 ## Conclusion
 
