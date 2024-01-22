@@ -12,11 +12,15 @@ image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
 In the evolving landscape of digital communication, email spoofing poses a significant threat to the integrity of online identities. As a hobby project, and to practice AWS and software design, I have been developing an application called MovieBooker. This application streamlines the process of booking movie tickets and managing movie programs for both moviegoers and staff.
 
 Check out the project on GitHub: [MovieBooker](https://github.com/tom-spencer-organization/MovieBooker)
-![Movibooker Architecture](img/ses-secure-email/image9.png)
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/6687bae9-38d8-454a-98c8-b71309c5adc4)
+
 
 ## Email Integration with AWS SES
 
 As part of the infrastructure for the MovieBooker application, I implemented Simple Email Service (SES) to send emails when a user pays for a ticket. However, I encountered a challenge where the messages contained a banner with a "Be careful with this message" warning. This marked the beginning of my quest to unravel the the secrets of email security.
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/eaaac7d9-d86e-4ac2-8f73-52e2557f1b2a)
+
 
 ## Strengthening Email Security with SPF, DKIM, and DMARC
 
@@ -114,6 +118,9 @@ In the navigation pane, under Configuration, choose **Verified identities**.
 - Go to the domain that you will be using to send emails from.
 - In the advanced settings, tick the option for **enabled DKIM signatures**.
 
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/99cd6a83-378b-4f52-a10e-fa1763eae8b1)
+
+
 4. **Set Up Public Key in DNS:**
 Once DKIM signatures are enabled, you need to set up the public key in your DNS.
   - Retrieve the public key from the AWS SES console.
@@ -126,9 +133,17 @@ Type: TXT
 Value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."
 ```
 
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/99673ace-9a3a-4787-85d5-fee5a06cdd85)
+
+
 6. **We also need to configure the mail from in our DNS, so that mail from shows owner’s domain name not aws add this as 5th point**
 
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/f2d6175d-6337-4d84-9c9d-79cb4cb48c47)
+
 7. **So here we got all the record sets in place.**
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/f7d6be65-6a6c-4db1-bf0f-73cc19c658a9)
+
 
 After the DKIM is configured we will configure SPF now.
 
@@ -177,7 +192,12 @@ Value: "v=spf1 include:_spf.example.com ip4:192.168.0.1 -all"
 
 1. **Create an SPF format.**
 
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/4b8f83d8-86df-481b-b3d7-3d1aa0da1c4c)
+
+
 2. **Enter this as value for DNS with Simple type Routing Policy**
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/71280d1e-c79a-48ef-9e7b-c9407fe61649)
 
 
 ## Configuring DMARC Policies
@@ -211,6 +231,13 @@ Value: "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; ruf=mailto:dmarc@e
 ```
 
 We can generate a value for the DMARC record set on this site [powerdmarc](https://powerdmarc.com/dmarc-record-generator/)
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/5bddbfab-f8e2-430d-bd1b-b4fdbc6093ee)
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/6a9ab586-978d-46a5-b40a-631c57fac30d)
+
+![image](https://github.com/TomSpencerLondon/NextJS-Blog/assets/27693622/949d3f84-e3d1-48e1-a6bd-f893c4676773)
+
 
 
 ## Conclusion
