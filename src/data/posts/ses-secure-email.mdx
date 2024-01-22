@@ -120,7 +120,7 @@ Once DKIM signatures are enabled, you need to set up the public key in your DNS.
   - Add a TXT record to your DNS with the DKIM public key.
 
 Example DNS Record:
-```plaintext
+```
 Name: _domainkey.yourdomain.com
 Type: TXT
 Value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."
@@ -168,7 +168,7 @@ Now, armed with an understanding of these components, you can proceed to configu
 
 Below is an example SPF (Sender Policy Framework) record that demonstrates the use of different mechanisms and qualifiers:
 
-```plaintext
+```
 v=spf1 include:_spf.example.com ip4:192.168.0.1 -all
 Name: yourdomain.com
 Type: TXT
@@ -204,7 +204,7 @@ Go to [https://aws.amazon.com/](https://aws.amazon.com/) and log in to your AWS 
 - Under "Type," select "TXT" from the drop-down menu.
 
 Example DMARC Record:
-```plaintext
+```
 Name: _dmarc.yourdomain.com
 Type: TXT
 Value: "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; ruf=mailto:dmarc@example.com"
