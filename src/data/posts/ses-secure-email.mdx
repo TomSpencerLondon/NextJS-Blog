@@ -127,7 +127,7 @@ Once DKIM signatures are enabled, you need to set up the public key in your DNS.
   - Add a TXT record to your DNS with the DKIM public key.
 
 Example DNS Record:
-```
+```bash
 Name: _domainkey.yourdomain.com
 Type: TXT
 Value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."
