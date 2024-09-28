@@ -1,0 +1,232 @@
+---
+title: 'AWS for Frontend Developers: LocalStack article code review'
+date: '2024-09-28'
+publishedAt: '2024-09-28'
+summary: 'My experience running code locally for aws frontend developers'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+
+## Overview
+I liked this article: https://blog.localstack.cloud/aws-for-frontend-devs/ from ![Brian Rinaldi](https://www.linkedin.com/in/brianrinaldi) for using AWS as a frontend developer.
+I liked his points about using AWS primitives i.e. that they can help save money and increase understanding of web development.
+I also loved the description of IAM:
+```
+working with IAM is like untangling a string of Christmas lights only to find that, once untangled, the lights aren't working because one single light, which you can't reliably locate, is not working. It's that fun.
+```
+A fellow AWS Community Builder Sedat Salman has also written a nice article is useful for further understanding of IAM:
+https://dev.to/aws-builders/a-beginners-guide-to-aws-identity-and-access-management-iam-4j5c
+
+I decided to run some of the code described in the article and share my experience here.
+
+## Setting up AWS CLI
+If you are not using AWS locally frequently a common gotcha is setting up AWS CLI. There are three steps here:
+- ![AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html)
+- ![AWS CLI](https://aws.amazon.com/cli/)
+- ![AWS CDK CLI](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_install)
+
+To configure CLI locally we can use `aws configure`. This command is used to configure the AWS CLI for general authentication and interaction with AWS services. It sets up credentials for access using access keys, which typically consist of an Access Key ID and a Secret Access Key.
+What it Configures:
+- Access Key ID
+- Secret Access Key
+- Default region (e.g., `us-east-1`)
+- Output format (e.g., `json`, `text`, `yaml`, etc.)
+
+You can also use `aws configure sso`. This command is used to configure AWS CLI with Single Sign-On (SSO), which allows users to authenticate using AWS IAM Identity Center (formerly AWS SSO) or an identity provider such as Microsoft Active Directory, Okta, or others.
+
+## Article Overview
+![Brian's article](https://blog.localstack.cloud/aws-for-frontend-devs/) starts with an overview of AWS Infrastructure and AWS Security Basics.
+### AWS Infrastructure
+The main points about the AWS infrastructure are that AWS has regions e.g. `us-east-1`. Each region has 3 or more availability zones (AZ). These are separate data centers within a region to make the zones resilient.
+### AWS Security Basics
+The main vehicle for security in AWS is ![AWS Identity and Access Management](https://aws.amazon.com/iam/). When we build applications each application will need to have specific access rights.
+IAM is made of four key parts:
+1. ![Users](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) = people who need to interact with AWS services
+2. ![User groups](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups.html) = tool to assign permissions to multiple users
+3. ![Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) = temporary grant of rights to access AWS services
+4. ![Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) = JSON documents that define permitted actions on services
+
+The article then goes into detail for the website building blocks and the web application building blocks. The website represents the html or visible documents. The web application is the backend services that service the resources.
+### Website
+For the website we see:
+- ![Amazon S3](https://blog.localstack.cloud/aws-for-frontend-devs/#amazon-s3) = store website assets
+- ![CloudFront](https://blog.localstack.cloud/aws-for-frontend-devs/#cloudfront) = edge caching of static web assets (Content Delivery Network)
+
+### Web Applications
+For the web application building blocks we see:
+- ![Lambda](https://blog.localstack.cloud/aws-for-frontend-devs/#lambda) = function for running some form of backend processing for the web application
+- ![API Gateway](https://blog.localstack.cloud/aws-for-frontend-devs/#api-gateway) = helps organise the backend APIs through restful endpoints
+- ![DynamoDB](https://blog.localstack.cloud/aws-for-frontend-devs/#dynamodb) = database for storing data perhaps displayed on the website or saved from the lambda function run
+
+## Running the code
+For the infrastructure setup for the services described above, Brian used the AWS CDK stack. Brian included the code for the article here: https://github.com/localstack-samples/aws-for-frontend-devs
+The README is quite clear. We will clone the code and try running it to see if it works for us. Mainly we just follow the README:
+To install all of the prerequisites, you can use the Makefile:
+```bash
+make install
+```
+I need LocalStack so just download from here:
+https://docs.localstack.cloud/getting-started/installation/
+```
+brew install localstack/tap/localstack-cli
+```
+To install cdklocal on npm we can usee this command:
+https://docs.localstack.cloud/user-guide/integrations/aws-cdk/
+```
+# Install globally
+npm install -g aws-cdk-local aws-cdk
+
+# Verify it installed correctly
+cdklocal --version
+# e.g. 1.65.5
+```
+Localstack now works:
+```
+➜  aws-for-frontend-devs git:(master) ✗ localstack start
+
+     __                     _______ __             __
+    / /   ____  _________ _/ / ___// /_____ ______/ /__
+   / /   / __ \/ ___/ __ `/ /\__ \/ __/ __ `/ ___/ //_/
+  / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,<
+ /_____/\____/\___/\__,_/_//____/\__/\__,_/\___/_/|_|
+
+ 💻 LocalStack CLI 3.7.2
+ 👤 Profile: default
+
+[04:38:41] starting LocalStack in Docker mode 🐳                                                     localstack.py:503
+─────────────────────────────────── LocalStack Runtime Log (press CTRL-C to quit) ────────────────────────────────────
+
+LocalStack version: 3.0.3.dev
+LocalStack Docker container id: 511e3f4c7e1c
+LocalStack build date: 2023-12-29
+LocalStack build git hash: 563edf7a
+
+2024-09-28T03:38:42.727  INFO --- [-functhread6] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
+2024-09-28T03:38:42.727  INFO --- [-functhread6] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
+2024-09-28T03:38:42.856  INFO --- [  MainThread] localstack.utils.bootstrap : Execution of "start_runtime_components" took 611.63ms
+Ready.
+```
+cdk bootstrap works well:
+```
+➜  s3 git:(master) ✗ cdklocal bootstrap
+ ⏳  Bootstrapping environment aws://000000000000/us-east-1...
+Trusted accounts for deployment: (none)
+Trusted accounts for lookup: (none)
+Using default execution policy of 'arn:aws:iam::aws:policy/AdministratorAccess'. Pass '--cloudformation-execution-policies' to customize.
+CDKToolkit: creating CloudFormation changeset...
+ ✅  Environment aws://000000000000/us-east-1 bootstrapped.
+```
+cdklocal deploy works:
+```
+
+➜  s3 git:(master) ✗ cdklocal deploy
+
+✨  Synthesis time: 7.1s
+
+S3Stack:  start: Building 3322b7049fb0ed2b7cbb644a2ada8d1116ff80c32dca89e6ada846b5de26f961:current_account-current_region
+S3Stack:  success: Built 3322b7049fb0ed2b7cbb644a2ada8d1116ff80c32dca89e6ada846b5de26f961:current_account-current_region
+S3Stack:  start: Building 2d56e153cac88d3e0c2f842e8e6f6783b8725bf91f95e0673b4725448a56e96d:current_account-current_region
+S3Stack:  success: Built 2d56e153cac88d3e0c2f842e8e6f6783b8725bf91f95e0673b4725448a56e96d:current_account-current_region
+S3Stack:  start: Publishing 3322b7049fb0ed2b7cbb644a2ada8d1116ff80c32dca89e6ada846b5de26f961:current_account-current_region
+S3Stack:  start: Building 02b3e28b9bf2893c77bb213a44995ab8ac1d9224ab74c400ab1a51d5f5fb4bc7:current_account-current_region
+S3Stack:  success: Built 02b3e28b9bf2893c77bb213a44995ab8ac1d9224ab74c400ab1a51d5f5fb4bc7:current_account-current_region
+S3Stack:  start: Publishing 2d56e153cac88d3e0c2f842e8e6f6783b8725bf91f95e0673b4725448a56e96d:current_account-current_region
+S3Stack:  start: Building e9830ceade25b6c2605fad111a59b934a6f3b0896226c71f839794fe1bb0c2b3:current_account-current_region
+S3Stack:  success: Built e9830ceade25b6c2605fad111a59b934a6f3b0896226c71f839794fe1bb0c2b3:current_account-current_region
+S3Stack:  start: Publishing 02b3e28b9bf2893c77bb213a44995ab8ac1d9224ab74c400ab1a51d5f5fb4bc7:current_account-current_region
+S3Stack:  start: Publishing e9830ceade25b6c2605fad111a59b934a6f3b0896226c71f839794fe1bb0c2b3:current_account-current_region
+S3Stack:  success: Published e9830ceade25b6c2605fad111a59b934a6f3b0896226c71f839794fe1bb0c2b3:current_account-current_region
+S3Stack:  success: Published 2d56e153cac88d3e0c2f842e8e6f6783b8725bf91f95e0673b4725448a56e96d:current_account-current_region
+S3Stack:  success: Published 02b3e28b9bf2893c77bb213a44995ab8ac1d9224ab74c400ab1a51d5f5fb4bc7:current_account-current_region
+S3Stack:  success: Published 3322b7049fb0ed2b7cbb644a2ada8d1116ff80c32dca89e6ada846b5de26f961:current_account-current_region
+This deployment will make potentially sensitive changes according to your current security approval level (--require-approval broadening).
+Please confirm you intend to make the following modifications:
+
+IAM Statement Changes
+┌───┬────────────────────────┬────────┬────────────────────────┬────────────────────────┬───────────────────────────┐
+│   │ Resource               │ Effect │ Action                 │ Principal              │ Condition                 │
+├───┼────────────────────────┼────────┼────────────────────────┼────────────────────────┼───────────────────────────┤
+│ + │ ${Custom::CDKBucketDep │ Allow  │ sts:AssumeRole         │ Service:lambda.amazona │                           │
+│   │ loyment8693BB64968944B │        │                        │ ws.com                 │                           │
+│   │ 69AAFB0CC9EB8756C/Serv │        │                        │                        │                           │
+│   │ iceRole.Arn}           │        │                        │                        │                           │
+├───┼────────────────────────┼────────┼────────────────────────┼────────────────────────┼───────────────────────────┤
+│ + │ ${MyWebAppBucket.Arn}  │ Deny   │ s3:*                   │ AWS:*                  │ "Bool": {                 │
+│   │ ${MyWebAppBucket.Arn}/ │        │                        │                        │   "aws:SecureTransport":  │
+│   │ *                      │        │                        │                        │ "false"                   │
+│   │                        │        │                        │                        │ }                         │
+│ + │ ${MyWebAppBucket.Arn}  │ Allow  │ s3:Abort*              │ AWS:${Custom::CDKBucke │                           │
+│   │ ${MyWebAppBucket.Arn}/ │        │ s3:DeleteObject*       │ tDeployment8693BB64968 │                           │
+│   │ *                      │        │ s3:GetBucket*          │ 944B69AAFB0CC9EB8756C/ │                           │
+│   │                        │        │ s3:GetObject*          │ ServiceRole}           │                           │
+│   │                        │        │ s3:List*               │                        │                           │
+│   │                        │        │ s3:PutObject           │                        │                           │
+│   │                        │        │ s3:PutObjectLegalHold  │                        │                           │
+│   │                        │        │ s3:PutObjectRetention  │                        │                           │
+│   │                        │        │ s3:PutObjectTagging    │                        │                           │
+│   │                        │        │ s3:PutObjectVersionTag │                        │                           │
+│   │                        │        │ ging                   │                        │                           │
+├───┼────────────────────────┼────────┼────────────────────────┼────────────────────────┼───────────────────────────┤
+│ + │ ${MyWebAppBucket.Arn}/ │ Allow  │ s3:GetObject           │ AWS:*                  │                           │
+│   │ *                      │        │                        │                        │                           │
+├───┼────────────────────────┼────────┼────────────────────────┼────────────────────────┼───────────────────────────┤
+│ + │ arn:${AWS::Partition}: │ Allow  │ s3:GetBucket*          │ AWS:${Custom::CDKBucke │                           │
+│   │ s3:::{"Fn::Sub":"cdk-h │        │ s3:GetObject*          │ tDeployment8693BB64968 │                           │
+│   │ nb659fds-assets-${AWS: │        │ s3:List*               │ 944B69AAFB0CC9EB8756C/ │                           │
+│   │ :AccountId}-${AWS::Reg │        │                        │ ServiceRole}           │                           │
+│   │ ion}"}                 │        │                        │                        │                           │
+│   │ arn:${AWS::Partition}: │        │                        │                        │                           │
+│   │ s3:::{"Fn::Sub":"cdk-h │        │                        │                        │                           │
+│   │ nb659fds-assets-${AWS: │        │                        │                        │                           │
+│   │ :AccountId}-${AWS::Reg │        │                        │                        │                           │
+│   │ ion}"}/*               │        │                        │                        │                           │
+└───┴────────────────────────┴────────┴────────────────────────┴────────────────────────┴───────────────────────────┘
+IAM Policy Changes
+┌───┬───────────────────────────────────────────────────────┬───────────────────────────────────────────────────────┐
+│   │ Resource                                              │ Managed Policy ARN                                    │
+├───┼───────────────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ + │ ${Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC │ arn:${AWS::Partition}:iam::aws:policy/service-role/AW │
+│   │ 9EB8756C/ServiceRole}                                 │ SLambdaBasicExecutionRole                             │
+└───┴───────────────────────────────────────────────────────┴───────────────────────────────────────────────────────┘
+(NOTE: There may be security-related changes not in this list. See https://github.com/aws/aws-cdk/issues/1299)
+
+Do you wish to deploy these changes (y/n)? y
+S3Stack: deploying... [1/1]
+S3Stack: creating CloudFormation changeset...
+
+ ✅  S3Stack
+
+✨  Deployment time: 35.37s
+
+Outputs:
+S3Stack.BucketWebsiteURL = http://s3stack-mywebappbucketb9f20f45-8911936a.s3-website.localhost.localstack.cloud:4566
+Stack ARN:
+arn:aws:cloudformation:us-east-1:000000000000:stack/S3Stack/3a83232a
+
+✨  Total time: 42.47s
+
+```
+It is nice that I don't have to deploy to AWS. LocalStack is very useful for checking local deployments.
+A fun test might be to check how to push to the S3 bucket locally.
+I can see that localstack is running a docker container locally:
+```
+➜  s3 git:(master) ✗ docker ps
+CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS                   PORTS                                                                    NAMES
+511e3f4c7e1c   localstack/localstack      "docker-entrypoint.sh"   6 minutes ago   Up 6 minutes (healthy)   127.0.0.1:4510-4560->4510-4560/tcp, 127.0.0.1:4566->4566/tcp, 5678/tcp   localstack-main
+```
+I can view the S3 bucket I have created here:
+```
+➜  s3 git:(master) ✗ aws --endpoint-url=http://localhost:4566 s3 ls
+2024-09-28 04:40:09 cdk-hnb659fds-assets-000000000000-us-east-1
+2024-09-28 04:41:13 s3stack-mywebappbucketb9f20f45-8911936a
+```
+We can also check other deployments:
+```
+aws --endpoint-url=http://localhost:4566 dynamodb list-tables
+aws --endpoint-url=http://localhost:4566 lambda list-functions
+```
+
+## Conclusion
+I very much enjoyed reading the localstack article and also really liked the time saving that LocalStack offers for running CDK deploys locally.
+This is a great tool and David's article has provided a nice introduction to Frontend development with AWS:
+https://blog.localstack.cloud/aws-for-frontend-devs/
+Recommended.
