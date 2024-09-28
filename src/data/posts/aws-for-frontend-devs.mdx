@@ -66,21 +66,21 @@ make install
 ```
 I need LocalStack so just download from here:
 https://docs.localstack.cloud/getting-started/installation/
-```
+```bash
 brew install localstack/tap/localstack-cli
 ```
 To install cdklocal on npm we can usee this command:
 https://docs.localstack.cloud/user-guide/integrations/aws-cdk/
-```
+```bash
 # Install globally
 npm install -g aws-cdk-local aws-cdk
 
 # Verify it installed correctly
 cdklocal --version
 # e.g. 1.65.5
-```
+```bash
 Localstack now works:
-```
+```bash
 ➜  aws-for-frontend-devs git:(master) ✗ localstack start
 
      __                     _______ __             __
@@ -106,7 +106,7 @@ LocalStack build git hash: 563edf7a
 Ready.
 ```
 cdk bootstrap works well:
-```
+```bash
 ➜  s3 git:(master) ✗ cdklocal bootstrap
  ⏳  Bootstrapping environment aws://000000000000/us-east-1...
 Trusted accounts for deployment: (none)
@@ -116,7 +116,7 @@ CDKToolkit: creating CloudFormation changeset...
  ✅  Environment aws://000000000000/us-east-1 bootstrapped.
 ```
 cdklocal deploy works:
-```
+```bash
 
 ➜  s3 git:(master) ✗ cdklocal deploy
 
@@ -208,19 +208,19 @@ arn:aws:cloudformation:us-east-1:000000000000:stack/S3Stack/3a83232a
 It is nice that I don't have to deploy to AWS. LocalStack is very useful for checking local deployments.
 A fun test might be to check how to push to the S3 bucket locally.
 I can see that localstack is running a docker container locally:
-```
+```bash
 ➜  s3 git:(master) ✗ docker ps
 CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS                   PORTS                                                                    NAMES
 511e3f4c7e1c   localstack/localstack      "docker-entrypoint.sh"   6 minutes ago   Up 6 minutes (healthy)   127.0.0.1:4510-4560->4510-4560/tcp, 127.0.0.1:4566->4566/tcp, 5678/tcp   localstack-main
 ```
 I can view the S3 bucket I have created here:
-```
+```bash
 ➜  s3 git:(master) ✗ aws --endpoint-url=http://localhost:4566 s3 ls
 2024-09-28 04:40:09 cdk-hnb659fds-assets-000000000000-us-east-1
 2024-09-28 04:41:13 s3stack-mywebappbucketb9f20f45-8911936a
 ```
 We can also check other deployments:
-```
+```bash
 aws --endpoint-url=http://localhost:4566 dynamodb list-tables
 aws --endpoint-url=http://localhost:4566 lambda list-functions
 ```
