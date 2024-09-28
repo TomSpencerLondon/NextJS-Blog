@@ -7,10 +7,10 @@ image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
 ---
 
 ## Overview
-I liked this article: https://blog.localstack.cloud/aws-for-frontend-devs/ from ![Brian Rinaldi](https://www.linkedin.com/in/brianrinaldi) for using AWS as a frontend developer.
+I liked this [article](https://blog.localstack.cloud/aws-for-frontend-devs/) from [Brian Rinaldi](https://www.linkedin.com/in/brianrinaldi) for using AWS as a frontend developer.
 I liked his points about using AWS primitives i.e. that they can help save money and increase understanding of web development.
 I also loved the description of IAM:
-```
+```text
 working with IAM is like untangling a string of Christmas lights only to find that, once untangled, the lights aren't working because one single light, which you can't reliably locate, is not working. It's that fun.
 ```
 A fellow AWS Community Builder Sedat Salman has also written a nice article is useful for further understanding of IAM:
@@ -20,9 +20,9 @@ I decided to run some of the code described in the article and share my experien
 
 ## Setting up AWS CLI
 If you are not using AWS locally frequently a common gotcha is setting up AWS CLI. There are three steps here:
-- ![AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html)
-- ![AWS CLI](https://aws.amazon.com/cli/)
-- ![AWS CDK CLI](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_install)
+- [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html)
+- [AWS CLI](https://aws.amazon.com/cli/)
+- [AWS CDK CLI](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_install)
 
 To configure CLI locally we can use `aws configure`. This command is used to configure the AWS CLI for general authentication and interaction with AWS services. It sets up credentials for access using access keys, which typically consist of an Access Key ID and a Secret Access Key.
 What it Configures:
@@ -34,28 +34,28 @@ What it Configures:
 You can also use `aws configure sso`. This command is used to configure AWS CLI with Single Sign-On (SSO), which allows users to authenticate using AWS IAM Identity Center (formerly AWS SSO) or an identity provider such as Microsoft Active Directory, Okta, or others.
 
 ## Article Overview
-![Brian's article](https://blog.localstack.cloud/aws-for-frontend-devs/) starts with an overview of AWS Infrastructure and AWS Security Basics.
+[Brian's article](https://blog.localstack.cloud/aws-for-frontend-devs/) starts with an overview of AWS Infrastructure and AWS Security Basics.
 ### AWS Infrastructure
 The main points about the AWS infrastructure are that AWS has regions e.g. `us-east-1`. Each region has 3 or more availability zones (AZ). These are separate data centers within a region to make the zones resilient.
 ### AWS Security Basics
-The main vehicle for security in AWS is ![AWS Identity and Access Management](https://aws.amazon.com/iam/). When we build applications each application will need to have specific access rights.
+The main vehicle for security in AWS is [AWS Identity and Access Management](https://aws.amazon.com/iam/). When we build applications each application will need to have specific access rights.
 IAM is made of four key parts:
-1. ![Users](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) = people who need to interact with AWS services
-2. ![User groups](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups.html) = tool to assign permissions to multiple users
-3. ![Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) = temporary grant of rights to access AWS services
-4. ![Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) = JSON documents that define permitted actions on services
+1. [Users](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) = people who need to interact with AWS services
+2. [User groups](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups.html) = tool to assign permissions to multiple users
+3. [Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) = temporary grant of rights to access AWS services
+4. [Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) = JSON documents that define permitted actions on services
 
 The article then goes into detail for the website building blocks and the web application building blocks. The website represents the html or visible documents. The web application is the backend services that service the resources.
 ### Website
 For the website we see:
-- ![Amazon S3](https://blog.localstack.cloud/aws-for-frontend-devs/#amazon-s3) = store website assets
-- ![CloudFront](https://blog.localstack.cloud/aws-for-frontend-devs/#cloudfront) = edge caching of static web assets (Content Delivery Network)
+- [Amazon S3](https://blog.localstack.cloud/aws-for-frontend-devs/#amazon-s3) = store website assets
+- [CloudFront](https://blog.localstack.cloud/aws-for-frontend-devs/#cloudfront) = edge caching of static web assets (Content Delivery Network)
 
 ### Web Applications
 For the web application building blocks we see:
-- ![Lambda](https://blog.localstack.cloud/aws-for-frontend-devs/#lambda) = function for running some form of backend processing for the web application
-- ![API Gateway](https://blog.localstack.cloud/aws-for-frontend-devs/#api-gateway) = helps organise the backend APIs through restful endpoints
-- ![DynamoDB](https://blog.localstack.cloud/aws-for-frontend-devs/#dynamodb) = database for storing data perhaps displayed on the website or saved from the lambda function run
+- [Lambda](https://blog.localstack.cloud/aws-for-frontend-devs/#lambda) = function for running some form of backend processing for the web application
+- [API Gateway](https://blog.localstack.cloud/aws-for-frontend-devs/#api-gateway) = helps organise the backend APIs through restful endpoints
+- [DynamoDB](https://blog.localstack.cloud/aws-for-frontend-devs/#dynamodb) = database for storing data perhaps displayed on the website or saved from the lambda function run
 
 ## Running the code
 For the infrastructure setup for the services described above, Brian used the AWS CDK stack. Brian included the code for the article here: https://github.com/localstack-samples/aws-for-frontend-devs
