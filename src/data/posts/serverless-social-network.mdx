@@ -1,0 +1,246 @@
+---
+title: 'AWS Serverless Social Network: How to Build a Scalable Social Platform'
+date: '2025-01-22'
+publishedAt: '2025-01-22'
+summary: 'Learn how to build a scalable social network using AWS serverless services like Lambda, API Gateway, DynamoDB, and S3. This guide covers system design, API endpoints, database schema, and request flows.'
+slug: 'aws-serverless-social-network'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+# Social Network
+
+## Introduction
+
+### The Power of Serverless on AWS
+Serverless computing on AWS offers unparalleled scalability, flexibility, and cost-efficiency, making it an ideal choice for modern application architectures. By leveraging services like AWS Lambda, API Gateway, DynamoDB, and S3, developers can build highly responsive and event-driven applications without worrying about infrastructure management. This architecture allows businesses to focus on delivering value quickly while maintaining resilience and performance.
+
+One of the most compelling use cases for serverless is in building social networks. Traditional architectures often struggle with traffic spikes, high operational costs, and monolithic codebases that slow down innovation. Serverless addresses these challenges by providing automatic scaling, pay-per-use pricing, and event-driven workflows that allow for independent feature deployment.
+
+### Inspiration for This Article and System Design
+The inspiration for this design comes from real-world experiences and insights shared by experts such as Yan Cui in his work *How to Build a Social Network Entirely on Serverless*【12†source】. The case study details how serverless can transform a monolithic social platform into a highly scalable, event-driven system that efficiently handles unpredictable traffic surges, reduces operational costs, and accelerates feature releases.
+
+By adopting a serverless-first approach, we aim to achieve:
+- **Improved developer velocity** through independent and rapid deployments.
+- **Cost efficiency** by eliminating over-provisioned infrastructure.
+- **Scalability** to handle millions of users dynamically.
+- **Event-driven architecture** for better system modularity and resilience.
+
+This document provides a comprehensive breakdown of how to build a social network leveraging AWS serverless services, inspired by industry best practices and real-world implementations.
+
+## System Requirements
+
+### Functional:
+- Users can create accounts, add profiles, and update details.
+- Users can follow/unfollow other users.
+- Users can post content (text, images, videos).
+- Users can like, comment, and share posts.
+- Users receive real-time notifications (new followers, likes, mentions, comments, etc.).
+- Users can search for other users or content.
+- A feed shows relevant content based on friends, follows, and recommendations.
+
+### Non-Functional:
+- System should support millions of concurrent users.
+- **Low latency**: API response times should be < 200ms.
+- **Scalability**: Should handle rapid spikes in traffic.
+- **Availability**: 99.99% uptime.
+- **Security**: User authentication with OAuth (Google, Facebook, Twitter).
+- **Data consistency**: Eventual consistency for high availability.
+
+## Capacity Estimation
+- **Users**: Assume 100 million users, with 10% active daily.
+- **Posts**: 10 million posts per day.
+- Average post size = 500KB.
+- Total storage needed = 5 TB/day.
+- **Likes and Comments**: 50 million likes/comments per day (each 100 bytes).
+- Total metadata storage per year = 1.8 TB.
+- **API Requests**: 20 API calls per user per day.
+- Peak load = 200K requests per second.
+
+Sure! Here's the rest of the article formatted in Markdown:
+
+---
+
+## API Design
+
+### API Endpoints
+
+| **Functionality**       | **API Endpoint**              | **Method** |
+|------------------------|------------------------------|-----------|
+| User Signup/Login      | `/api/auth/signup`           | POST      |
+| Get User Profile       | `/api/users/{user_id}`       | GET       |
+| Follow User           | `/api/users/{user_id}/follow` | POST      |
+| Create Post           | `/api/posts`                 | POST      |
+| Get Feed              | `/api/feed`                  | GET       |
+| Like Post             | `/api/posts/{post_id}/like`  | POST      |
+| Comment on Post       | `/api/posts/{post_id}/comment` | POST      |
+| Search Users          | `/api/search`                | GET       |
+
+---
+
+## Database Design
+
+### Entities / Tables:
+- **Users**
+- **Friendships**
+- **Posts**
+- **Likes**
+
+### Relationships between Entities:
+- **Users ↔ Friendships** (Many-to-Many) – Users can have multiple friends.
+- **Users ↔ Posts** (One-to-Many) – A user can create multiple posts.
+- **Users ↔ Likes** (Many-to-Many) – A user can like multiple posts.
+- **Posts ↔ Likes** (One-to-Many) – A post can have multiple likes.
+
+### Primary and Foreign Keys:
+
+#### **Primary Keys (PK)**
+- `users.user_id`
+- `posts.post_id`
+
+#### **Foreign Keys (FK)**
+- `friendships.user1_id → users.user_id`
+- `friendships.user2_id → users.user_id`
+- `posts.user_id → users.user_id`
+- `likes.user_id → users.user_id`
+- `likes.post_id → posts.post_id`
+
+### SQL Table Definitions:
+
+```sql
+CREATE TABLE users (
+    user_id STRING PRIMARY KEY,
+    name STRING,
+    email STRING,
+    profile_image STRING,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE friendships (
+    user1_id STRING,
+    user2_id STRING,
+    status STRING,  -- 'pending', 'accepted'
+    friendship_strength INT,  -- 1 (Weak), 2 (Medium), 3 (Strong)
+    created_at TIMESTAMP
+);
+
+CREATE TABLE posts (
+    post_id STRING PRIMARY KEY,
+    user_id STRING,
+    content STRING,
+    media_url STRING,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE likes (
+    user_id STRING,
+    post_id STRING,
+    created_at TIMESTAMP
+);
+```
+
+### Example Data:
+
+```sql
+INSERT INTO users (user_id, name, email, profile_image, created_at) VALUES
+('U1', 'Alice', 'alice@example.com', 'alice.jpg', CURRENT_TIMESTAMP),
+('U2', 'Bob', 'bob@example.com', 'bob.jpg', CURRENT_TIMESTAMP),
+('U3', 'Charlie', 'charlie@example.com', 'charlie.jpg', CURRENT_TIMESTAMP);
+
+INSERT INTO friendships (user1_id, user2_id, status, friendship_strength, created_at) VALUES
+('U1', 'U2', 'accepted', 3, CURRENT_TIMESTAMP),
+('U1', 'U3', 'accepted', 2, CURRENT_TIMESTAMP);
+
+INSERT INTO posts (post_id, user_id, content, media_url, created_at) VALUES
+('P1', 'U1', 'Excited to join this network!', 'post1.jpg', CURRENT_TIMESTAMP),
+('P2', 'U2', 'Loving SALSA recommendations!', 'post2.jpg', CURRENT_TIMESTAMP);
+
+INSERT INTO likes (user_id, post_id, created_at) VALUES
+('U1', 'P2', CURRENT_TIMESTAMP),
+('U2', 'P1', CURRENT_TIMESTAMP);
+```
+
+---
+
+## High-Level Design
+
+### System Goals:
+- **User interactions:** Posting, following, liking, commenting.
+- **Efficient data retrieval:** Feeds and recommendations.
+- **Graph-based friend suggestions:** SALSA-based recommendation engine.
+- **Real-time notifications and event-driven processing.**
+
+### Core Components and Their Purpose:
+
+| **Component**               | **Purpose** |
+|-----------------------------|------------|
+| API Gateway                 | Routes requests, handles authentication & rate-limiting. |
+| Authentication (Cognito)     | Manages user authentication & authorization. |
+| User Service                | Manages user profiles, following/unfollowing logic. |
+| Post Service                | Handles post creation. |
+| Feed Service                | Generates personalized user feeds using caching & ranking models. |
+| Recommendation Service      | Uses SALSA-based graph processing for friend suggestions. |
+| Notification Service        | Sends real-time push notifications for interactions. |
+| Storage Layer (RDS + DynamoDB) | Stores structured and unstructured data. |
+| ElastiCache (Redis)         | Caches feeds for quick retrieval. |
+| BigQuery & Graph DB (Neptune) | Processes social graph queries and recommendations. |
+| Event-Driven Architecture (SNS, SQS, Kinesis) | Ensures async processing for high performance. |
+
+---
+
+## Request Flows
+
+### 1. **User Signup & Authentication Flow**
+#### **Scenario:** A user signs up and logs in.
+
+**Request Flow:**
+1. User submits credentials → `POST /api/auth/signup`
+2. API Gateway forwards request to `AuthService`.
+3. `AuthService` validates credentials using Cognito.
+4. If valid, Cognito generates JWT token and returns it to `AuthService`.
+5. `AuthService` sends JWT back to API Gateway.
+6. User receives authentication token and can now make further requests.
+
+### 2. **User Posts a New Message**
+#### **Scenario:** A user creates a new post.
+
+**Request Flow:**
+1. User submits post request → `POST /api/posts`
+2. API Gateway forwards request to `PostService`.
+3. `PostService` stores metadata in RDS (PostgreSQL).
+4. If media is attached, `PostService` uploads it to S3.
+5. `PostService` sends an event to `FeedService` to update the user’s timeline.
+6. `PostService` triggers SNS notifications to notify followers.
+
+### 3. **User Retrieves Their Feed**
+#### **Scenario:** A user fetches their personalized timeline.
+
+**Request Flow:**
+1. User requests feed → `GET /api/feed`
+2. API Gateway forwards request to `FeedService`.
+3. `FeedService` checks `ElastiCache (Redis)` for cached feed.
+4. If **cache hit**, return feed instantly.
+5. If **cache miss**, query DynamoDB for recent posts from followed users.
+6. `FeedService` ranks the feed using `BigQuery (Engagement Data)`.
+7. Feed is returned and stored in `ElastiCache` for faster retrieval.
+
+### 4. **Friend Recommendation Flow (Using SALSA Algorithm)**
+#### **Scenario:** System recommends friends to a user.
+
+**Request Flow:**
+1. User requests friend suggestions → `GET /api/recommendations`
+2. API Gateway forwards request to `RecommendationService`.
+3. `RecommendationService` queries `BigQuery` to compute SALSA-based recommendations.
+4. `BigQuery` analyzes mutual friends, engagement, and bipartite graph structure.
+5. `RecommendationService` returns ranked friend suggestions.
+
+---
+
+## Summary of Request Flows
+
+| **Flow**               | **Key Steps** |
+|------------------------|--------------|
+| **Signup/Login**       | Cognito validates user, returns JWT. |
+| **Create Post**        | Post stored in RDS, media uploaded to S3, followers notified via SNS. |
+| **Fetch Feed**        | Check Redis cache, fetch missing posts, rank using BigQuery. |
+| **Friend Recommendations** | BigQuery computes suggestions using the SALSA algorithm. |
+
+---
