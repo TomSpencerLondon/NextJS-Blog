@@ -48,12 +48,12 @@ This document provides a comprehensive breakdown of how to build a social networ
 ## Capacity Estimation
 - **Users**: Assume 100 million users, with 10% active daily.
 - **Posts**: 10 million posts per day.
-- Average post size = 500KB.
-- Total storage needed = 5 TB/day.
-- **Likes and Comments**: 50 million likes/comments per day (each 100 bytes).
-- Total metadata storage per year = 1.8 TB.
+- Average post size = `500KB`.
+- Total storage needed = `5 TB/day`.
+- **Likes and Comments**: 50 million likes/comments per day (each `100 bytes`).
+- Total metadata storage per year = `1.8 TB`.
 - **API Requests**: 20 API calls per user per day.
-- Peak load = 200K requests per second.
+- Peak load = `200K requests per second`.
 
 Sure! Here's the rest of the article formatted in Markdown:
 
@@ -284,7 +284,7 @@ Here's the detailed component design formatted in Markdown:
 
 ### **Scaling Considerations**
 - **Read-heavy system** → Caching (Redis) reduces database load.
-- **Frequent updates** → TTL (Time-To-Live) of **30 seconds** ensures freshness.
+- **Frequent updates** → TTL (Time-To-Live) of `30 seconds` ensures freshness.
 
 ### **Scaling Solution**
 - **Shard Redis by user ID** → Distributes load.
@@ -356,9 +356,9 @@ Here's the detailed component design formatted in Markdown:
 
 | **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
 |-----------------|---------------------|------------------------------|
-| **PostgreSQL (RDS)** | Relational, ACID-compliant, supports complex queries | ✅ Chosen for structured data (users, posts, friendships). Supports JOINS, transactions, and consistency. |
-| **DynamoDB (NoSQL)** | High-speed key-value lookups, good for caching-style operations | ✅ Used for fast lookups (likes, quick user interactions) where JOINS aren’t required. |
-| **Hybrid Approach** | Use both SQL (structured) & NoSQL (unstructured) | ✅ Best of both worlds: SQL for structured social graphs, NoSQL for high-speed reads. |
+| **PostgreSQL (RDS)** | Relational, ACID-compliant, supports complex queries | Chosen for structured data (users, posts, friendships). Supports JOINS, transactions, and consistency. |
+| **DynamoDB (NoSQL)** | High-speed key-value lookups, good for caching-style operations | Used for fast lookups (likes, quick user interactions) where JOINS aren’t required. |
+| **Hybrid Approach** | Use both SQL (structured) & NoSQL (unstructured) | Best of both worlds: SQL for structured social graphs, NoSQL for high-speed reads. |
 
 ### **Trade-Off**
 - **PostgreSQL** is **slower for read-heavy workloads** compared to DynamoDB.
@@ -371,12 +371,12 @@ Here's the detailed component design formatted in Markdown:
 
 | **Option**         | **Why Consider It?** | **Final Choice & Reasoning** |
 |-------------------|---------------------|------------------------------|
-| **Fetch feed from PostgreSQL/DynamoDB** | Always up-to-date but slower due to multiple DB queries | ❌ Too slow for real-time feed rendering. |
-| **Redis Cache (ElastiCache)** | Speeds up retrieval by storing precomputed feeds | ✅ Best for low-latency feed delivery. Store top 50 posts per user in Redis. |
-| **Hybrid Approach** | Store precomputed feeds but periodically refresh from DB | ✅ Chosen approach: Redis stores feeds, DB updates the cache every few minutes. |
+| **Fetch feed from PostgreSQL/DynamoDB** | Always up-to-date but slower due to multiple DB queries | Too slow for real-time feed rendering. |
+| **Redis Cache (ElastiCache)** | Speeds up retrieval by storing precomputed feeds | Best for low-latency feed delivery. Store top 50 posts per user in Redis. |
+| **Hybrid Approach** | Store precomputed feeds but periodically refresh from DB | Chosen approach: Redis stores feeds, DB updates the cache every few minutes. |
 
 ### **Trade-Off**
-- **Redis is fast** but **requires managing cache expiration** (TTL = 30s).
+- **Redis is fast** but **requires managing cache expiration** (TTL = `30s`).
 - **Direct DB queries** are fresh but slow.
 - **Solution** → **Combine both**:
 - **Cache recent feeds** for instant access.
@@ -388,9 +388,9 @@ Here's the detailed component design formatted in Markdown:
 
 | **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
 |-----------------|---------------------|------------------------------|
-| **PageRank (Google’s Algorithm)** | Ranks users based on total incoming links | ❌ Too biased toward high-follower users (celebrities dominate suggestions). |
-| **SALSA (Stochastic Approach for Link-Structure Analysis)** | Uses bipartite graphs (hubs & authorities) for better recommendations | ✅ Best for Twitter-style friend suggestions (finds users similar to those you follow). |
-| **Hybrid Approach** | Mix SALSA with content-based ranking | ✅ SALSA for social graph, BigQuery ML for behavioral insights. |
+| **PageRank (Google’s Algorithm)** | Ranks users based on total incoming links | Too biased toward high-follower users (celebrities dominate suggestions). |
+| **SALSA (Stochastic Approach for Link-Structure Analysis)** | Uses bipartite graphs (hubs & authorities) for better recommendations | Best for Twitter-style friend suggestions (finds users similar to those you follow). |
+| **Hybrid Approach** | Mix SALSA with content-based ranking | SALSA for social graph, BigQuery ML for behavioral insights. |
 
 ### **Trade-Off**
 - **SALSA is better for mutual connections** but doesn’t account for engagement (likes, comments).
@@ -403,9 +403,9 @@ Here's the detailed component design formatted in Markdown:
 
 | **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
 |-----------------|---------------------|------------------------------|
-| **AWS Neptune (Graph Database)** | Purpose-built for social graph analysis | ❌ Harder to scale beyond graph queries. |
-| **BigQuery (Data Warehouse for Analytics)** | Works well with batch processing, scaling | ✅ Best for large-scale friend recommendations. |
-| **Hybrid Approach** | Use BigQuery for batch processing & GraphDB for real-time queries | ✅ GraphDB for real-time, BigQuery for large-scale batch ranking. |
+| **AWS Neptune (Graph Database)** | Purpose-built for social graph analysis | Harder to scale beyond graph queries. |
+| **BigQuery (Data Warehouse for Analytics)** | Works well with batch processing, scaling | Best for large-scale friend recommendations. |
+| **Hybrid Approach** | Use BigQuery for batch processing & GraphDB for real-time queries | GraphDB for real-time, BigQuery for large-scale batch ranking. |
 
 ### **Trade-Off**
 - **BigQuery handles billions of rows** but **isn’t real-time**.
@@ -418,8 +418,8 @@ Here's the detailed component design formatted in Markdown:
 
 | **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
 |-----------------|---------------------|------------------------------|
-| **Apache Kafka** | Open-source, widely used, event-driven processing | ❌ Harder to manage in AWS serverless environments. |
-| **AWS Kinesis** | Managed service, integrates with Lambda & Redshift | ✅ Best for AWS-based architectures. |
+| **Apache Kafka** | Open-source, widely used, event-driven processing | Harder to manage in AWS serverless environments. |
+| **AWS Kinesis** | Managed service, integrates with Lambda & Redshift | Best for AWS-based architectures. |
 
 ### **Trade-Off**
 - **Kafka gives more control** but **requires manual scaling**.
@@ -462,7 +462,7 @@ A **scalable social network** must be **fault-tolerant, highly available, and re
 - **Issue:** The feed stored in Redis may become outdated, leading to users seeing old posts.
 - **Impact:** Users miss new posts, leading to frustration.
 - **Solution:**
-- **Set a short TTL (Time-To-Live) for cache** (e.g., **30 seconds**).
+- **Set a short TTL (Time-To-Live) for cache** (e.g., `30 seconds`).
 - **Use event-driven updates** (e.g., when a new post is created, update Redis immediately).
 
 ### **Hybrid Cache Strategy**

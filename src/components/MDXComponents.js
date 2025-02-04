@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import Emoji from './Emoji';
 import Image from 'next/image';
+import hljs from 'highlight.js';
+import { useRef, useEffect } from 'react';
+
+// Import of highlight.js styles removed for troubleshooting
 
 const CustomLink = (props) => {
   const { href, children, ...rest } = props;
@@ -21,11 +25,23 @@ const CustomLink = (props) => {
   );
 };
 
+const MDXComponents = ({ children }) => {
+  const codeRef = useRef(null);
 
-const MDXComponents = {
-  Image,
-  a: CustomLink,
-  Emoji,
+  useEffect(() => {
+    if (codeRef.current) {
+      hljs.highlightBlock(codeRef.current);
+    }
+  }, [children]);
+
+  return (
+    <div ref={codeRef}>
+      <Image />
+      <a href="#">Custom Link</a>
+      <Emoji />
+      {children}
+    </div>
+  );
 };
 
 export default MDXComponents;

@@ -77,16 +77,14 @@ Spring Boot uses a very particular PropertySource order that is designed to allo
 9. Java System properties (System.getProperties()).
 10. OS environment variables.
 11. A RandomValuePropertySource that has properties only in random.*.
-12. Profile-specific application properties outside of your packaged jar (application-{profile}.properties and YAML variants).
-13. Profile-specific application properties packaged inside your jar (application-{profile}.properties and YAML variants).
-14. Application properties outside of your packaged jar (application.properties and YAML variants).
-15. Application properties packaged inside your jar (application.properties and YAML variants).
-16. @PropertySource annotations on your @Configuration classes.
-17. Default properties (specified by setting SpringApplication.setDefaultProperties).
+12. Application properties outside of your packaged jar (application.properties and YAML variants).
+13. Application properties packaged inside your jar (application.properties and YAML variants).
+14. @PropertySource annotations on your @Configuration classes.
+15. Default properties (specified by setting SpringApplication.setDefaultProperties).
 
-### Using Spring Profiles
-We can use Spring Profiles to load the appropriate data source. If the bean does not have an active profile it is brought in.
-Beans with a dev profile will get ignored in production.
+### Using Spring
+We can use Spring to load the appropriate data source. If the bean does not have an active configuration it is brought in.
+Beans with a dev configuration will get ignored in production.
 
 ```java
 public interface FakeDataSource {
@@ -95,10 +93,9 @@ public interface FakeDataSource {
 
 ```
 
-We then have different profiles for each source:
+We then have different configurations for each source:
 ```java
 @Component
-@Profile("dev")
 public class DevDataSource implements FakeDataSource{
     @Override
     public String getConnectionInfo() {
@@ -107,12 +104,11 @@ public class DevDataSource implements FakeDataSource{
 }
 ```
 
-We can then use one of those profiles in our test:
+We can then use one of those configurations in our test:
 ```java
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DataSourceConfig.class)
-@ActiveProfiles("dev")
 public class DataSourceTest {
     private FakeDataSource fakeDataSource;
 
@@ -129,8 +125,8 @@ public class DataSourceTest {
 
 ```
 
-### Setting the active profile at runtime
-Spring offers a number of ways to set the active profile at runtime.
+### Setting the active configuration at runtime
+Spring offers a number of ways to set the active configuration at runtime.
 
 ### Using Databases
 We are going to use AWS RDS for our production environment. We will have h2 for dev.
@@ -180,7 +176,7 @@ spring.datasource.username=root
 spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
 ```
-We then set the active profile to qa. You may need to change the permissions for connecting to mysql:
+We then set the active configuration to qa. You may need to change the permissions for connecting to mysql:
 ```bash
 mysql > ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
 mysql > FLUSH PRIVILEGES;
@@ -213,7 +209,7 @@ If we check in MySQL Workbench we see that our new user has limited privileges:
 
 ![image](https://user-images.githubusercontent.com/27693622/226191730-242a9258-d00c-4d9f-bc6b-8d2482033655.png)
 
-We can then add this user for testing with the qa profile:
+We can then add this user for testing with the qa configuration:
 ```properties
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
@@ -789,9 +785,6 @@ Uploaded to central: https://jfrog.drspencer.io/artifactory/libs-release-local/g
 
 ```
 
-We now see the release on our artifactory repository browser:
-    <img width="506" alt="image" src="https://user-images.githubusercontent.com/27693622/227556194-db0dfd0e-b99a-4bc6-ac85-dce2191208af.png">
-
 ### Jenkins with Artifactory
 We now set up Jenkins to look at the maven home directory to get changes uploaded to artifactory.
 We go to our operating system's home directory for jenkins:
@@ -806,8 +799,7 @@ bash-5.2$ whoami
 jenkins
 ```
 We then add the same configuration from our settings.xml to /var/lib/jenkins/settings.xml. Now we return to jenkins and add a build.
-We can now see that we are using our artifactory instance to download the required dependencies:
-    <im width="1235" alt="image" src="https://user-images.githubusercontent.com/27693622/227561234-920779af-9a33-408b-9147-225e0a32e44e.png">
+
 Artifactory is important so that we can host the jars that we are building. It also works as read cache to save dependencies.
 Other tools on Artifactory such as Xray can help ensure that we are careful with open source software and have a history of what we
 are using. Xray checks dependencies for security issues.
@@ -946,7 +938,7 @@ This takes a while to set up the database:
 ![image](https://user-images.githubusercontent.com/27693622/227985399-b48aff81-0b1a-444c-8bf3-fbd4208e4efb.png)
 We can now connect to the database using the following configuration:
 ```properties
-guru.springframework.profile.message=This is mysql rds Profile
+guru.springframework.configuration.message=This is mysql rds Configuration
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 spring.datasource.url=jdbc:mysql://<YOUR MYSQL INSTANCE URL>:3306/springgurudb
 spring.jpa.hibernate.ddl-auto=update
@@ -967,5 +959,3 @@ java -jar spring-core-devops-0.0.4.jar
 Our application is now running on port 8080 on our ec2 instance:
 ![image](https://user-images.githubusercontent.com/27693622/228028858-fc043fc2-32b8-42ae-b715-4183113abc76.png)
 I hope you find this intro to Spring with AWS helpful!
-
-

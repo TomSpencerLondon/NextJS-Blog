@@ -19,10 +19,9 @@ export default function Header() {
           <CustomLink href="/">
             <div className="relative w-10 h-10 cursor-pointer">
               <Image
-                src="/_next/image?url=%2Fimg%2Ftom-spencer-headshot.jpg&w=3840&q=75"
+                src="/img/tom-spencer-headshot.jpg"
                 alt="Tom Spencer Headshot"
-                layout="fill"
-                objectFit="cover"
+                fill
                 className="rounded-full"
               />
             </div>

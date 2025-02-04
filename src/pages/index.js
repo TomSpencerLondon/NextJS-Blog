@@ -1,5 +1,6 @@
 import { CgArrowLongRight } from 'react-icons/cg';
 import { getAllFilesFrontMatter } from '@/lib/mdx';
+import { serialize } from 'next-mdx-remote/serialize';
 
 import AppContainer from '@/components/AppContainer';
 import BlogCard from '@/components/BlogCard';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import hydrate from 'next-mdx-remote/hydrate';
+import { MDXRemote } from 'next-mdx-remote';
 
 import { getFiles, getFileBySlug, getAllFilesFrontMatter } from '@/lib/mdx';
 import Custom404 from '@/pages/404';
@@ -7,7 +7,7 @@ import PostLayout from '@/layouts/post';
 import MDXComponents from '@/components/MDXComponents';
 
 export default function BlogPost({ mdxSource, frontMatter }) {
-  const content = hydrate(mdxSource, {
+  const content = MDXRemote(mdxSource, {
     components: MDXComponents,
   });
 

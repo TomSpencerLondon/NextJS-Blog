@@ -13,10 +13,8 @@ export default function Custom404() {
         <div className="relative w-80 h-80 cursor-pointer">
           <Image
             src="/img/404.png"
-            alt="Tom Spencer Headshot"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-full"
+            alt="404"
+            fill
           />
         </div>
         <div className="max-w-lg mx-auto text-center space-y-2 prose prose-indigo prose-xl leading-snug">
