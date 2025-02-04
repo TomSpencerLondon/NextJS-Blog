@@ -137,7 +137,11 @@ CREATE TABLE likes (
 );
 ```
 
-### Example Data:
+### Example Data
+
+![Image](https://github.com/user-attachments/assets/871dedab-93e6-4ba6-a236-a716be6587db)
+
+![Image](https://github.com/user-attachments/assets/9ca5b0bf-9ddb-478d-bdc0-1cd7468acfb5)
 
 ```sql
 INSERT INTO users (user_id, name, email, profile_image, created_at) VALUES
@@ -161,6 +165,12 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 ---
 
 ## High-Level Design
+![Image](https://github.com/user-attachments/assets/2859e878-6114-4cbb-8dd7-21524b1a40ee)
+
+![Image](https://github.com/user-attachments/assets/e6960f11-257a-47e7-a149-2c1034ba5d2d)
+
+
+![Image](https://github.com/user-attachments/assets/307a138a-1f0a-4bec-99c7-414a37d703e7)
 
 ### System Goals:
 - **User interactions:** Posting, following, liking, commenting.
@@ -199,6 +209,8 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 5. `AuthService` sends JWT back to API Gateway.
 6. User receives authentication token and can now make further requests.
 
+![Image](https://github.com/user-attachments/assets/9b0f52cb-0339-4f61-96e5-7608a29909b8)
+
 ### 2. **User Posts a New Message**
 #### **Scenario:** A user creates a new post.
 
@@ -209,6 +221,8 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 4. If media is attached, `PostService` uploads it to S3.
 5. `PostService` sends an event to `FeedService` to update the user’s timeline.
 6. `PostService` triggers SNS notifications to notify followers.
+
+![Image](https://github.com/user-attachments/assets/ac356f84-c311-473a-820f-f8487e86b4c2)
 
 ### 3. **User Retrieves Their Feed**
 #### **Scenario:** A user fetches their personalized timeline.
@@ -222,6 +236,8 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 6. `FeedService` ranks the feed using `BigQuery (Engagement Data)`.
 7. Feed is returned and stored in `ElastiCache` for faster retrieval.
 
+![Image](https://github.com/user-attachments/assets/5277c39a-41a4-4c42-82af-e03a2ac2ee7b)
+
 ### 4. **Friend Recommendation Flow (Using SALSA Algorithm)**
 #### **Scenario:** System recommends friends to a user.
 
@@ -232,7 +248,7 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 4. `BigQuery` analyzes mutual friends, engagement, and bipartite graph structure.
 5. `RecommendationService` returns ranked friend suggestions.
 
----
+![Image](https://github.com/user-attachments/assets/58fc351a-7d34-4e85-976a-a7036ee7d133)
 
 ## Summary of Request Flows
 
@@ -242,5 +258,303 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 | **Create Post**        | Post stored in RDS, media uploaded to S3, followers notified via SNS. |
 | **Fetch Feed**        | Check Redis cache, fetch missing posts, rank using BigQuery. |
 | **Friend Recommendations** | BigQuery computes suggestions using the SALSA algorithm. |
+
+Here's the detailed component design formatted in Markdown:
+
+---
+
+# **Detailed Component Design**
+
+## **Feed Service: Caching & Ranking**
+
+### **Overview**
+- The **Feed Service** is responsible for generating and delivering a personalized timeline for users.
+- It **fetches posts** from followed users, **ranks** them, and **caches** results for fast retrieval.
+- **Uses Redis (ElastiCache) for caching** and **BigQuery for ranking**.
+
+### **How the Feed Service Works**
+1. **User Requests Feed** → API Gateway forwards request to `FeedService`.
+2. **Check Cache (Redis) for Feed**:
+- If **cache hit** → Return cached feed instantly.
+- If **cache miss** → Query DynamoDB for latest posts from followed users.
+3. **Rank Feed Using BigQuery**:
+- Fetch engagement data (likes, comments, shares).
+- Apply ranking algorithm to order posts.
+4. **Cache the Ranked Feed in Redis** for future requests.
+
+### **Scaling Considerations**
+- **Read-heavy system** → Caching (Redis) reduces database load.
+- **Frequent updates** → TTL (Time-To-Live) of **30 seconds** ensures freshness.
+
+### **Scaling Solution**
+- **Shard Redis by user ID** → Distributes load.
+- **Use a write-through cache** → Cache updates when a new post is created.
+
+![Image](https://github.com/user-attachments/assets/adf4ea05-4ad1-4f79-8049-54730950b950)
+---
+
+## **Recommendation Service: Friend Suggestions using SALSA**
+
+### **Overview**
+- The **Recommendation Service** suggests new friends to users.
+- **Uses SALSA (Stochastic Approach for Link-Structure Analysis)** to rank friend suggestions.
+- Implements **graph traversal** over user-follow relationships.
+
+### **How the Recommendation Service Works**
+1. **User Requests Recommendations** → API Gateway forwards request to `RecommendationService`.
+2. **Fetch Mutual Friends Data from BigQuery**.
+3. **Run SALSA Algorithm**:
+- Perform **two-step random walk** from the user.
+- Alternate between **“hubs”** (followers) and **“authorities”** (followed users).
+- Compute **ranking scores** based on visit frequency.
+4. **Return Friend Suggestions**.
+
+### **Scaling Considerations**
+- **BigQuery runs in parallel** → Handles millions of social connections efficiently.
+- **Batch processing recommendations every few hours** → Avoids unnecessary recomputation.
+- **GraphDB (Amazon Neptune) as an alternative** for real-time recommendations.
+
+![Image](https://github.com/user-attachments/assets/4435b173-9924-4e42-80b3-2ffb1902b35f)
+---
+
+## **Real-Time Engagement Tracking with AWS Kinesis**
+
+### **Overview**
+- **Tracks user engagement in real-time** (likes, comments, shares).
+- Uses **AWS Kinesis** to capture streams of interactions.
+- **Processes data with BigQuery** to update rankings dynamically.
+
+### **How the Real-Time Tracking Works**
+1. **User interacts with a post (like/comment/share)** → API Gateway forwards event.
+2. **Kinesis captures event stream**.
+3. **Lambda processes events** and stores them in **Redshift**.
+4. **BigQuery aggregates engagement metrics**.
+5. **Feed rankings update dynamically**.
+
+### **Scaling Considerations**
+- **Kinesis scales automatically** → Handles millions of events per second.
+- **Partitioning by post ID** ensures efficient event ingestion.
+- **Aggregating data in Redshift & BigQuery** keeps computation fast.
+
+![Image](https://github.com/user-attachments/assets/e7f665c1-00e2-459e-b6a6-e5e1e07f4749)
+
+---
+
+## **Summary of Detailed Components**
+
+| **Component**          | **Key Features**                        | **Scaling Considerations** |
+|------------------------|-----------------------------------------|----------------------------|
+| **Feed Service**       | Caching (Redis), Post Ranking (BigQuery) | Sharding Redis, Expiring Cache (TTL) |
+| **Recommendation Service** | SALSA Algorithm for Friend Suggestions | BigQuery Batch Processing, GraphDB for Real-Time |
+| **Real-Time Tracking** | Kinesis for event streaming            | Kinesis Partitioning, Redshift Aggregation |
+
+---
+
+# **Trade-offs & Tech Choices**
+
+## **SQL (PostgreSQL) vs. NoSQL (DynamoDB)**
+
+| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
+|-----------------|---------------------|------------------------------|
+| **PostgreSQL (RDS)** | Relational, ACID-compliant, supports complex queries | ✅ Chosen for structured data (users, posts, friendships). Supports JOINS, transactions, and consistency. |
+| **DynamoDB (NoSQL)** | High-speed key-value lookups, good for caching-style operations | ✅ Used for fast lookups (likes, quick user interactions) where JOINS aren’t required. |
+| **Hybrid Approach** | Use both SQL (structured) & NoSQL (unstructured) | ✅ Best of both worlds: SQL for structured social graphs, NoSQL for high-speed reads. |
+
+### **Trade-Off**
+- **PostgreSQL** is **slower for read-heavy workloads** compared to DynamoDB.
+- **DynamoDB** lacks relational querying, making **recommendations** more difficult.
+- **Solution** → **Hybrid approach** ensures optimal performance (**RDS for complex queries, DynamoDB for real-time interactions**).
+
+---
+
+## **Redis Caching vs. Querying Database for Feeds**
+
+| **Option**         | **Why Consider It?** | **Final Choice & Reasoning** |
+|-------------------|---------------------|------------------------------|
+| **Fetch feed from PostgreSQL/DynamoDB** | Always up-to-date but slower due to multiple DB queries | ❌ Too slow for real-time feed rendering. |
+| **Redis Cache (ElastiCache)** | Speeds up retrieval by storing precomputed feeds | ✅ Best for low-latency feed delivery. Store top 50 posts per user in Redis. |
+| **Hybrid Approach** | Store precomputed feeds but periodically refresh from DB | ✅ Chosen approach: Redis stores feeds, DB updates the cache every few minutes. |
+
+### **Trade-Off**
+- **Redis is fast** but **requires managing cache expiration** (TTL = 30s).
+- **Direct DB queries** are fresh but slow.
+- **Solution** → **Combine both**:
+- **Cache recent feeds** for instant access.
+- **Trigger DB refresh** when a new post is added.
+
+---
+
+## **SALSA Algorithm vs. PageRank for Recommendations**
+
+| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
+|-----------------|---------------------|------------------------------|
+| **PageRank (Google’s Algorithm)** | Ranks users based on total incoming links | ❌ Too biased toward high-follower users (celebrities dominate suggestions). |
+| **SALSA (Stochastic Approach for Link-Structure Analysis)** | Uses bipartite graphs (hubs & authorities) for better recommendations | ✅ Best for Twitter-style friend suggestions (finds users similar to those you follow). |
+| **Hybrid Approach** | Mix SALSA with content-based ranking | ✅ SALSA for social graph, BigQuery ML for behavioral insights. |
+
+### **Trade-Off**
+- **SALSA is better for mutual connections** but doesn’t account for engagement (likes, comments).
+- **PageRank is better for global rankings** but favors influencers.
+- **Solution** → **SALSA + Engagement-Based ML** for Hybrid Recommendations.
+
+---
+
+## **BigQuery vs. AWS Neptune (Graph DB)**
+
+| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
+|-----------------|---------------------|------------------------------|
+| **AWS Neptune (Graph Database)** | Purpose-built for social graph analysis | ❌ Harder to scale beyond graph queries. |
+| **BigQuery (Data Warehouse for Analytics)** | Works well with batch processing, scaling | ✅ Best for large-scale friend recommendations. |
+| **Hybrid Approach** | Use BigQuery for batch processing & GraphDB for real-time queries | ✅ GraphDB for real-time, BigQuery for large-scale batch ranking. |
+
+### **Trade-Off**
+- **BigQuery handles billions of rows** but **isn’t real-time**.
+- **AWS Neptune is faster** but **harder to query at scale**.
+- **Solution** → **BigQuery for batch processing, GraphDB for real-time analysis**.
+
+---
+
+## **Kinesis vs. Kafka for Real-Time Events**
+
+| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
+|-----------------|---------------------|------------------------------|
+| **Apache Kafka** | Open-source, widely used, event-driven processing | ❌ Harder to manage in AWS serverless environments. |
+| **AWS Kinesis** | Managed service, integrates with Lambda & Redshift | ✅ Best for AWS-based architectures. |
+
+### **Trade-Off**
+- **Kafka gives more control** but **requires manual scaling**.
+- **Kinesis is auto-scaled** but **tied to AWS**.
+- **Solution** → **Use Kinesis for real-time tracking of user engagement**.
+
+Here is your **Failure Scenarios & Bottlenecks** section formatted in **Markdown**:
+
+---
+
+# **Failure Scenarios & Bottlenecks**
+
+A **scalable social network** must be **fault-tolerant, highly available, and resilient** to failures. Below we discuss potential **failure scenarios**, their **impact**, and **solutions**.
+
+---
+
+## **Database Bottlenecks & Failures**
+
+### **Problem: High Read/Write Load on PostgreSQL (RDS)**
+- **Issue:** When millions of users interact with the platform, relational database queries slow down.
+- **Impact:** Slower user profile retrieval, delayed posts, and failed transactions.
+- **Solution:**
+- **Use Read Replicas** → Offload reads from the main database.
+- **Cache user profiles and posts** in Redis to avoid frequent database queries.
+- **Use DynamoDB** for high-speed lookups (likes, recent activity).
+- **Partition database tables** (shard by `user_id`) to distribute load.
+
+### **Problem: Single Point of Failure in RDS**
+- **Issue:** If the primary PostgreSQL database crashes, the system goes down.
+- **Impact:** Users cannot post, view feeds, or interact.
+- **Solution:**
+- **Enable Multi-AZ (Availability Zones) for RDS** → Automatic failover to a backup instance.
+- **Use periodic database backups & point-in-time recovery** to restore data quickly.
+
+---
+
+## **Cache Invalidation Issues**
+
+### **Problem: Stale Feed Data in Redis**
+- **Issue:** The feed stored in Redis may become outdated, leading to users seeing old posts.
+- **Impact:** Users miss new posts, leading to frustration.
+- **Solution:**
+- **Set a short TTL (Time-To-Live) for cache** (e.g., **30 seconds**).
+- **Use event-driven updates** (e.g., when a new post is created, update Redis immediately).
+
+### **Hybrid Cache Strategy**
+- **Write-through caching** → Store data in Redis first, then update the database.
+- **Write-back caching** → Update the database in the background asynchronously.
+
+### **Problem: Redis Overload**
+- **Issue:** Redis can become overloaded due to excessive cache writes/reads.
+- **Impact:** The entire cache layer crashes, increasing database load.
+- **Solution:**
+- **Implement cache eviction policies** (Least Recently Used – **LRU**).
+- **Shard Redis by user ID** to distribute load across multiple Redis clusters.
+- **Set memory limits and monitor cache hit rates**.
+
+---
+
+## **Real-Time Event Processing Failures**
+
+### **Problem: Kinesis Fails to Process Engagement Data**
+- **Issue:** If AWS Kinesis goes down or lags, engagement tracking (**likes, comments, shares**) stops.
+- **Impact:** SALSA recommendations become outdated, and trending post ranking fails.
+- **Solution:**
+- **Use AWS SQS as a backup queue** → If Kinesis is unavailable, route events to SQS for delayed processing.
+- **Enable Kinesis Auto-Scaling** to handle traffic spikes dynamically.
+
+---
+
+## **Recommendation System Issues**
+
+### **Problem: SALSA Algorithm Generates Poor Recommendations**
+- **Issue:** If SALSA has insufficient user data, it may suggest irrelevant friends.
+- **Impact:** Users get **low-quality friend recommendations**, leading to disengagement.
+- **Solution:**
+- **Combine SALSA with engagement-based ranking** (likes, shares).
+- **Use BigQuery ML** to fine-tune recommendations based on historical user behavior.
+- **Periodically re-train models** to ensure freshness.
+
+---
+
+## **API Gateway & Authentication Failures**
+
+### **Problem: API Gateway Rate Limits too Strict**
+- **Issue:** If API rate limits are too aggressive, normal users get blocked.
+- **Impact:** Users see **errors** when trying to access the platform.
+- **Solution:**
+- **Implement dynamic rate limiting** (e.g., adjust based on user activity patterns).
+- **Allow temporary rate limit increases** for VIP users or verified accounts.
+
+### **Problem: Cognito Authentication Outage**
+- **Issue:** If AWS Cognito fails, no user can log in.
+- **Impact:** **Complete system lockout**.
+- **Solution:**
+- **Use a fallback authentication provider** (e.g., Firebase Auth) in case Cognito is down.
+- **Cache authentication tokens in Redis** to allow temporary login even if Cognito is down.
+
+---
+
+## **Traffic Spikes & Scaling Bottlenecks**
+
+### **Problem: Unexpected Traffic Spike**
+- **Issue:** A **viral post** or **high-profile user joins** and generates **10x normal traffic**.
+- **Impact:** **Database overload**, API latency increases, users face downtime.
+- **Solution:**
+- **Use Auto-Scaling Groups (ASG) in AWS** to increase compute power dynamically.
+- **Distribute requests across multiple regions** (CDN for images, global load balancing).
+- **Enable Redis + CDN caching** for high-traffic endpoints.
+
+---
+
+## **Security & Data Privacy Risks**
+
+### **Problem: User Data Breach**
+- **Issue:** If a vulnerability exposes user data, attackers can steal profiles, messages.
+- **Impact:** **Reputation damage**, legal issues.
+- **Solution:**
+- **Encrypt user data at rest (AWS KMS) and in transit (HTTPS/TLS).**
+- **Use IAM roles with least privilege access.**
+- **Monitor logs with AWS CloudTrail for suspicious activity.**
+
+---
+
+## **Summary of Failure Scenarios & Solutions**
+
+| **Failure**                  | **Impact**                    | **Solution** |
+|------------------------------|------------------------------|-------------|
+| **DB Overload**              | Slow response times          | Use read replicas, sharding, Redis caching. |
+| **Cache Invalidation Issues** | Stale feed data             | Use TTL-based caching, event-driven updates. |
+| **Kinesis Failure**           | Engagement tracking stops   | Use SQS fallback, auto-scaling. |
+| **Weak Friend Recommendations** | Low engagement             | Combine SALSA + ML-based ranking. |
+| **API Gateway Rate Limits**   | Blocks legit users          | Use adaptive rate limiting. |
+| **Authentication Failure (Cognito)** | No logins possible    | Use backup auth provider, cache JWT tokens. |
+| **Traffic Spike Overload**    | System crash                | Auto-scaling, CDN, cache optimizations. |
+| **Security Breach**           | Data theft                  | Encryption, IAM restrictions, monitoring. |
 
 ---
