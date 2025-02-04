@@ -20,7 +20,7 @@ export default function PostLayout({ children, frontMatter }) {
           <p className=" prose prose-indigo dark:prose-dark text-gray-700 dark:text-gray-200">
             Written by:{' '}
             <CustomLink href="/about" className="text-gray-700">
-              <p className="text-gray-700">Tom Spencer</p>
+              <span className="text-gray-700">Tom Spencer</span>
             </CustomLink>
           </p>
           <span className="text-gray-600 dark:text-gray-200 italic">

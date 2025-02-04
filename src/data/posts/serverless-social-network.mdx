@@ -64,17 +64,57 @@ Sure! Here's the rest of the article formatted in Markdown:
 
 ### API Endpoints
 
-| **Functionality**       | **API Endpoint**              | **Method** |
-|------------------------|------------------------------|-----------|
-| User Signup/Login      | `/api/auth/signup`           | POST      |
-| Get User Profile       | `/api/users/{user_id}`       | GET       |
-| Follow User           | `/api/users/{user_id}/follow` | POST      |
-| Create Post           | `/api/posts`                 | POST      |
-| Get Feed              | `/api/feed`                  | GET       |
-| Like Post             | `/api/posts/{post_id}/like`  | POST      |
-| Comment on Post       | `/api/posts/{post_id}/comment` | POST      |
-| Search Users          | `/api/search`                | GET       |
-
+<table>
+    <thead>
+    <tr>
+        <th>Functionality</th>
+        <th>API Endpoint</th>
+        <th>Method</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>User Signup/Login</td>
+        <td>/api/auth/signup</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Get User Profile</td>
+        <td>/api/users/user_id</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Follow User</td>
+        <td>/api/users/user_id/follow</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Create Post</td>
+        <td>/api/posts</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Get Feed</td>
+        <td>/api/feed</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Like Post</td>
+        <td>/api/posts/post_id/like</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Comment on Post</td>
+        <td>/api/posts/post_id/comment</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Search Users</td>
+        <td>/api/search</td>
+        <td>GET</td>
+    </tr>
+    </tbody>
+</table>
 ---
 
 ## Database Design
@@ -181,19 +221,60 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 
 ### Core Components and Their Purpose:
 
-| **Component**               | **Purpose** |
-|-----------------------------|------------|
-| API Gateway                 | Routes requests, handles authentication & rate-limiting. |
-| Authentication (Cognito)     | Manages user authentication & authorization. |
-| User Service                | Manages user profiles, following/unfollowing logic. |
-| Post Service                | Handles post creation. |
-| Feed Service                | Generates personalized user feeds using caching & ranking models. |
-| Recommendation Service      | Uses SALSA-based graph processing for friend suggestions. |
-| Notification Service        | Sends real-time push notifications for interactions. |
-| Storage Layer (RDS + DynamoDB) | Stores structured and unstructured data. |
-| ElastiCache (Redis)         | Caches feeds for quick retrieval. |
-| BigQuery & Graph DB (Neptune) | Processes social graph queries and recommendations. |
-| Event-Driven Architecture (SNS, SQS, Kinesis) | Ensures async processing for high performance. |
+<table>
+    <thead>
+    <tr>
+        <th>Component</th>
+        <th>Purpose</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>API Gateway</td>
+        <td>Routes requests, handles authentication & rate-limiting.</td>
+    </tr>
+    <tr>
+        <td>Authentication (Cognito)</td>
+        <td>Manages user authentication & authorization.</td>
+    </tr>
+    <tr>
+        <td>User Service</td>
+        <td>Manages user profiles, following/unfollowing logic.</td>
+    </tr>
+    <tr>
+        <td>Post Service</td>
+        <td>Handles post creation.</td>
+    </tr>
+    <tr>
+        <td>Feed Service</td>
+        <td>Generates personalized user feeds using caching & ranking models.</td>
+    </tr>
+    <tr>
+        <td>Recommendation Service</td>
+        <td>Uses SALSA-based graph processing for friend suggestions.</td>
+    </tr>
+    <tr>
+        <td>Notification Service</td>
+        <td>Sends real-time push notifications for interactions.</td>
+    </tr>
+    <tr>
+        <td>Storage Layer (RDS + DynamoDB)</td>
+        <td>Stores structured and unstructured data.</td>
+    </tr>
+    <tr>
+        <td>ElastiCache (Redis)</td>
+        <td>Caches feeds for quick retrieval.</td>
+    </tr>
+    <tr>
+        <td>BigQuery & Graph DB (Neptune)</td>
+        <td>Processes social graph queries and recommendations.</td>
+    </tr>
+    <tr>
+        <td>Event-Driven Architecture (SNS, SQS, Kinesis)</td>
+        <td>Ensures async processing for high performance.</td>
+    </tr>
+    </tbody>
+</table>
 
 ---
 
@@ -253,12 +334,32 @@ INSERT INTO likes (user_id, post_id, created_at) VALUES
 
 ## Summary of Request Flows
 
-| **Flow**               | **Key Steps** |
-|------------------------|--------------|
-| **Signup/Login**       | Cognito validates user, returns JWT. |
-| **Create Post**        | Post stored in RDS, media uploaded to S3, followers notified via SNS. |
-| **Fetch Feed**        | Check Redis cache, fetch missing posts, rank using BigQuery. |
-| **Friend Recommendations** | BigQuery computes suggestions using the SALSA algorithm. |
+<table>
+    <thead>
+    <tr>
+        <th>Flow</th>
+        <th>Key Steps</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Signup/Login</strong></td>
+        <td>Cognito validates user, returns JWT.</td>
+    </tr>
+    <tr>
+        <td><strong>Create Post</strong></td>
+        <td>Post stored in RDS, media uploaded to S3, followers notified via SNS.</td>
+    </tr>
+    <tr>
+        <td><strong>Fetch Feed</strong></td>
+        <td>Check Redis cache, fetch missing posts, rank using BigQuery.</td>
+    </tr>
+    <tr>
+        <td><strong>Friend Recommendations</strong></td>
+        <td>BigQuery computes suggestions using the SALSA algorithm.</td>
+    </tr>
+    </tbody>
+</table>
 
 Here's the detailed component design formatted in Markdown:
 
@@ -342,24 +443,64 @@ Here's the detailed component design formatted in Markdown:
 ---
 
 ## **Summary of Detailed Components**
-
-| **Component**          | **Key Features**                        | **Scaling Considerations** |
-|------------------------|-----------------------------------------|----------------------------|
-| **Feed Service**       | Caching (Redis), Post Ranking (BigQuery) | Sharding Redis, Expiring Cache (TTL) |
-| **Recommendation Service** | SALSA Algorithm for Friend Suggestions | BigQuery Batch Processing, GraphDB for Real-Time |
-| **Real-Time Tracking** | Kinesis for event streaming            | Kinesis Partitioning, Redshift Aggregation |
+<table>
+    <thead>
+    <tr>
+        <th>Component</th>
+        <th>Key Features</th>
+        <th>Scaling Considerations</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Feed Service</strong></td>
+        <td>Caching (Redis), Post Ranking (BigQuery)</td>
+        <td>Sharding Redis, Expiring Cache (TTL)</td>
+    </tr>
+    <tr>
+        <td><strong>Recommendation Service</strong></td>
+        <td>SALSA Algorithm for Friend Suggestions</td>
+        <td>BigQuery Batch Processing, GraphDB for Real-Time</td>
+    </tr>
+    <tr>
+        <td><strong>Real-Time Tracking</strong></td>
+        <td>Kinesis for event streaming</td>
+        <td>Kinesis Partitioning, Redshift Aggregation</td>
+    </tr>
+    </tbody>
+</table>
 
 ---
 
 # **Trade-offs & Tech Choices**
 
 ## **SQL (PostgreSQL) vs. NoSQL (DynamoDB)**
-
-| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
-|-----------------|---------------------|------------------------------|
-| **PostgreSQL (RDS)** | Relational, ACID-compliant, supports complex queries | Chosen for structured data (users, posts, friendships). Supports JOINS, transactions, and consistency. |
-| **DynamoDB (NoSQL)** | High-speed key-value lookups, good for caching-style operations | Used for fast lookups (likes, quick user interactions) where JOINS aren’t required. |
-| **Hybrid Approach** | Use both SQL (structured) & NoSQL (unstructured) | Best of both worlds: SQL for structured social graphs, NoSQL for high-speed reads. |
+<table>
+    <thead>
+    <tr>
+        <th>Option</th>
+        <th>Why Consider It?</th>
+        <th>Final Choice & Reasoning</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>PostgreSQL (RDS)</strong></td>
+        <td>Relational, ACID-compliant, supports complex queries</td>
+        <td>Chosen for structured data (users, posts, friendships). Supports JOINS, transactions, and consistency.</td>
+    </tr>
+    <tr>
+        <td><strong>DynamoDB (NoSQL)</strong></td>
+        <td>High-speed key-value lookups, good for caching-style operations</td>
+        <td>Used for fast lookups (likes, quick user interactions) where JOINS aren’t required.</td>
+    </tr>
+    <tr>
+        <td><strong>Hybrid Approach</strong></td>
+        <td>Use both SQL (structured) & NoSQL (unstructured)</td>
+        <td>Best of both worlds: SQL for structured social graphs, NoSQL for high-speed reads.</td>
+    </tr>
+    </tbody>
+</table>
 
 ### **Trade-Off**
 - **PostgreSQL** is **slower for read-heavy workloads** compared to DynamoDB.
@@ -369,12 +510,32 @@ Here's the detailed component design formatted in Markdown:
 ---
 
 ## **Redis Caching vs. Querying Database for Feeds**
-
-| **Option**         | **Why Consider It?** | **Final Choice & Reasoning** |
-|-------------------|---------------------|------------------------------|
-| **Fetch feed from PostgreSQL/DynamoDB** | Always up-to-date but slower due to multiple DB queries | Too slow for real-time feed rendering. |
-| **Redis Cache (ElastiCache)** | Speeds up retrieval by storing precomputed feeds | Best for low-latency feed delivery. Store top 50 posts per user in Redis. |
-| **Hybrid Approach** | Store precomputed feeds but periodically refresh from DB | Chosen approach: Redis stores feeds, DB updates the cache every few minutes. |
+<table>
+    <thead>
+    <tr>
+        <th>Option</th>
+        <th>Why Consider It?</th>
+        <th>Final Choice & Reasoning</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Fetch feed from PostgreSQL/DynamoDB</strong></td>
+        <td>Always up-to-date but slower due to multiple DB queries</td>
+        <td>Too slow for real-time feed rendering.</td>
+    </tr>
+    <tr>
+        <td><strong>Redis Cache (ElastiCache)</strong></td>
+        <td>Speeds up retrieval by storing precomputed feeds</td>
+        <td>Best for low-latency feed delivery. Store top 50 posts per user in Redis.</td>
+    </tr>
+    <tr>
+        <td><strong>Hybrid Approach</strong></td>
+        <td>Store precomputed feeds but periodically refresh from DB</td>
+        <td>Chosen approach: Redis stores feeds, DB updates the cache every few minutes.</td>
+    </tr>
+    </tbody>
+</table>
 
 ### **Trade-Off**
 - **Redis is fast** but **requires managing cache expiration** (TTL = `30s`).
@@ -387,11 +548,32 @@ Here's the detailed component design formatted in Markdown:
 
 ## **SALSA Algorithm vs. PageRank for Recommendations**
 
-| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
-|-----------------|---------------------|------------------------------|
-| **PageRank (Google’s Algorithm)** | Ranks users based on total incoming links | Too biased toward high-follower users (celebrities dominate suggestions). |
-| **SALSA (Stochastic Approach for Link-Structure Analysis)** | Uses bipartite graphs (hubs & authorities) for better recommendations | Best for Twitter-style friend suggestions (finds users similar to those you follow). |
-| **Hybrid Approach** | Mix SALSA with content-based ranking | SALSA for social graph, BigQuery ML for behavioral insights. |
+<table>
+    <thead>
+    <tr>
+        <th>Option</th>
+        <th>Why Consider It?</th>
+        <th>Final Choice & Reasoning</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>PageRank (Google’s Algorithm)</strong></td>
+        <td>Ranks users based on total incoming links</td>
+        <td>Too biased toward high-follower users (celebrities dominate suggestions).</td>
+    </tr>
+    <tr>
+        <td><strong>SALSA (Stochastic Approach for Link-Structure Analysis)</strong></td>
+        <td>Uses bipartite graphs (hubs & authorities) for better recommendations</td>
+        <td>Best for Twitter-style friend suggestions (finds users similar to those you follow).</td>
+    </tr>
+    <tr>
+        <td><strong>Hybrid Approach</strong></td>
+        <td>Mix SALSA with content-based ranking</td>
+        <td>SALSA for social graph, BigQuery ML for behavioral insights.</td>
+    </tr>
+    </tbody>
+</table>
 
 ### **Trade-Off**
 - **SALSA is better for mutual connections** but doesn’t account for engagement (likes, comments).
@@ -417,10 +599,32 @@ Here's the detailed component design formatted in Markdown:
 
 ## **Kinesis vs. Kafka for Real-Time Events**
 
-| **Option**       | **Why Consider It?** | **Final Choice & Reasoning** |
-|-----------------|---------------------|------------------------------|
-| **Apache Kafka** | Open-source, widely used, event-driven processing | Harder to manage in AWS serverless environments. |
-| **AWS Kinesis** | Managed service, integrates with Lambda & Redshift | Best for AWS-based architectures. |
+<table>
+    <thead>
+    <tr>
+        <th>Option</th>
+        <th>Why Consider It?</th>
+        <th>Final Choice & Reasoning</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>AWS Neptune (Graph Database)</strong></td>
+        <td>Purpose-built for social graph analysis</td>
+        <td>Harder to scale beyond graph queries.</td>
+    </tr>
+    <tr>
+        <td><strong>BigQuery (Data Warehouse for Analytics)</strong></td>
+        <td>Works well with batch processing, scaling</td>
+        <td>Best for large-scale friend recommendations.</td>
+    </tr>
+    <tr>
+        <td><strong>Hybrid Approach</strong></td>
+        <td>Use BigQuery for batch processing & GraphDB for real-time queries</td>
+        <td>GraphDB for real-time, BigQuery for large-scale batch ranking.</td>
+    </tr>
+    </tbody>
+</table>
 
 ### **Trade-Off**
 - **Kafka gives more control** but **requires manual scaling**.
@@ -547,15 +751,56 @@ A **scalable social network** must be **fault-tolerant, highly available, and re
 
 ## **Summary of Failure Scenarios & Solutions**
 
-| **Failure**                  | **Impact**                    | **Solution** |
-|------------------------------|------------------------------|-------------|
-| **DB Overload**              | Slow response times          | Use read replicas, sharding, Redis caching. |
-| **Cache Invalidation Issues** | Stale feed data             | Use TTL-based caching, event-driven updates. |
-| **Kinesis Failure**           | Engagement tracking stops   | Use SQS fallback, auto-scaling. |
-| **Weak Friend Recommendations** | Low engagement             | Combine SALSA + ML-based ranking. |
-| **API Gateway Rate Limits**   | Blocks legit users          | Use adaptive rate limiting. |
-| **Authentication Failure (Cognito)** | No logins possible    | Use backup auth provider, cache JWT tokens. |
-| **Traffic Spike Overload**    | System crash                | Auto-scaling, CDN, cache optimizations. |
-| **Security Breach**           | Data theft                  | Encryption, IAM restrictions, monitoring. |
+<table>
+    <thead>
+    <tr>
+        <th>Failure</th>
+        <th>Impact</th>
+        <th>Solution</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>DB Overload</strong></td>
+        <td>Slow response times</td>
+        <td>Use read replicas, sharding, Redis caching.</td>
+    </tr>
+    <tr>
+        <td><strong>Cache Invalidation Issues</strong></td>
+        <td>Stale feed data</td>
+        <td>Use TTL-based caching, event-driven updates.</td>
+    </tr>
+    <tr>
+        <td><strong>Kinesis Failure</strong></td>
+        <td>Engagement tracking stops</td>
+        <td>Use SQS fallback, auto-scaling.</td>
+    </tr>
+    <tr>
+        <td><strong>Weak Friend Recommendations</strong></td>
+        <td>Low engagement</td>
+        <td>Combine SALSA + ML-based ranking.</td>
+    </tr>
+    <tr>
+        <td><strong>API Gateway Rate Limits</strong></td>
+        <td>Blocks legit users</td>
+        <td>Use adaptive rate limiting.</td>
+    </tr>
+    <tr>
+        <td><strong>Authentication Failure (Cognito)</strong></td>
+        <td>No logins possible</td>
+        <td>Use backup auth provider, cache JWT tokens.</td>
+    </tr>
+    <tr>
+        <td><strong>Traffic Spike Overload</strong></td>
+        <td>System crash</td>
+        <td>Auto-scaling, CDN, cache optimizations.</td>
+    </tr>
+    <tr>
+        <td><strong>Security Breach</strong></td>
+        <td>Data theft</td>
+        <td>Encryption, IAM restrictions, monitoring.</td>
+    </tr>
+    </tbody>
+</table>
 
 ---
