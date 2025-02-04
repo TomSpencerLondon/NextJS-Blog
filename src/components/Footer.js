@@ -9,17 +9,11 @@ export default function Footer() {
       <footer>
         <div className="flex flex-col justify-around items-center md:flex-row md:items-baseline md:justify-between max-w-4xl px-4 mx-auto py-6">
           <div className="prose prose-indigo dark:prose-dark">
-            <CustomLink href="https://github.com/TomSpencerLondon/NextJS-Blog">
-              <a>I made this</a>
-            </CustomLink>{' '}
+            <CustomLink href="https://github.com/TomSpencerLondon/NextJS-Blog">I made this</CustomLink>{' '}
             with{' '}
-            <CustomLink href="https://nextjs.org">
-              <a>Next.js</a>
-            </CustomLink>
+            <CustomLink href="https://nextjs.org">Next.js</CustomLink>
             , and{' '}
-            <CustomLink href="https://vercel.com/">
-              <a>Vercel</a>
-            </CustomLink>
+            <CustomLink href="https://vercel.com/">Vercel</CustomLink>
             .
           </div>
           <div className="flex items-center justify-end pt-8 md:pt-0 space-x-10">

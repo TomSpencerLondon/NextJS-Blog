@@ -30,10 +30,8 @@ export default function Home({ posts }) {
         <BlogCard key={frontMatter.title} date={frontMatter.publishedAt} {...frontMatter} />
       ))}
       <p className="text-center">
-        <CustomLink href={`/posts`}>
-          <a className="inline-flex link-underline items-center text-lg my-4">
-            View All Posts <CgArrowLongRight size="1.5em" className="ml-2" />
-          </a>
+        <CustomLink href={`/posts`} className="inline-flex link-underline items-center text-lg my-4">
+          View All Posts <CgArrowLongRight size="1.5em" className="ml-2" />
         </CustomLink>
       </p>
     </AppContainer>

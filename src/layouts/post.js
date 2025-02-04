@@ -19,8 +19,8 @@ export default function PostLayout({ children, frontMatter }) {
         <div className="flex flex-col md:flex-row items-center justify-between pb-4">
           <p className=" prose prose-indigo dark:prose-dark text-gray-700 dark:text-gray-200">
             Written by:{' '}
-            <CustomLink href="/about">
-              <a className="text-gray-700">Tom Spencer</a>
+            <CustomLink href="/about" className="text-gray-700">
+              <p className="text-gray-700">Tom Spencer</p>
             </CustomLink>
           </p>
           <span className="text-gray-600 dark:text-gray-200 italic">
@@ -33,16 +33,12 @@ export default function PostLayout({ children, frontMatter }) {
           {children}
         </div>
         <div className="flex flex-row items-center justify-center text-sm space-x-4">
-          <CustomLink href={discussUrl(frontMatter.slug)}>
-            <a className="text-gray-600 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-400">
-              Discuss on Twitter
-            </a>
+          <CustomLink href={discussUrl(frontMatter.slug)} className="text-gray-600 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-400">
+            Discuss on Twitter
           </CustomLink>
           <span>•</span>
-          <CustomLink href={editUrl(frontMatter.slug)}>
-            <a className="text-gray-600 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-400">
-              Edit on GitHub
-            </a>
+          <CustomLink href={editUrl(frontMatter.slug)} className="text-gray-600 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-400">
+            Edit on GitHub
           </CustomLink>
         </div>
       </article>

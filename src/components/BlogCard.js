@@ -11,19 +11,15 @@ export default function BlogCard({ title, summary, slug, date, readingTime }) {
         </div>
         <div className="md:w-full ">
           <div>
-            <CustomLink href={`/posts/${slug}`}>
-              <a className="hover:no-underline">
-                <h3 className="text-gray-800 dark:text-gray-50 font-semibold text-2xl leading-tight">
-                  {title}
-                </h3>
-              </a>
+            <CustomLink href={`/posts/${slug}`} className="hover:no-underline">
+              <h3 className="text-gray-800 dark:text-gray-50 font-semibold text-2xl leading-tight">
+                {title}
+              </h3>
             </CustomLink>
             {/* <div className="space-x-4 mb-4">
               {[{ tag: 'SEO' }, { tag: 'Design' }, { tag: 'Dev' }].map((tags) => (
-                <CustomLink href="#" key={tags.tag}>
-                  <a className="uppercase text-sm font-semibold link-underline text-indigo-500 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-200">
-                    {tags.tag}
-                  </a>
+                <CustomLink href="#" key={tags.tag} className="uppercase text-sm font-semibold link-underline text-indigo-500 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-gray-200">
+                  {tags.tag}
                 </CustomLink>
               ))}
             </div> */}
@@ -31,11 +27,9 @@ export default function BlogCard({ title, summary, slug, date, readingTime }) {
           <div className="mb-6">
             <p className="text-gray-600 dark:text-gray-300 text-lg leading-snug">{summary}</p>
           </div>
-          <CustomLink href={`/posts/${slug}`}>
-            <a className="inline-flex items-center link-underline text-lg">
-              Read more
-              <CgArrowLongRight className="ml-2 text-xl" />
-            </a>
+          <CustomLink href={`/posts/${slug}`} className="inline-flex items-center link-underline text-lg">
+            Read more
+            <CgArrowLongRight className="ml-2 text-xl" />
           </CustomLink>
         </div>
       </div>

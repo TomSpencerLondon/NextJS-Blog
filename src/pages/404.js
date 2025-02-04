@@ -25,13 +25,9 @@ export default function Custom404() {
           </p>
           <p className="">
             In the meantime, feel free to{' '}
-            <CustomLink href="/posts">
-              <a>view or search other blog posts</a>
-            </CustomLink>{' '}
+            <CustomLink href="/posts">view or search other blog posts</CustomLink>{' '}
             or go to the{' '}
-            <CustomLink href="/">
-              <a>homepage</a>
-            </CustomLink>
+            <CustomLink href="/">homepage</CustomLink>
             ?
           </p>
         </div>

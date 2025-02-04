@@ -17,17 +17,15 @@ export default function Header() {
       <div className="flex items-center justify-between py-8">
         <div>
           <CustomLink href="/">
-            <a>
-              <div className="relative w-10 h-10 cursor-pointer">
-                <Image
-                  src="/_next/image?url=%2Fimg%2Ftom-spencer-headshot.jpg&w=3840&q=75"
-                  alt="Tom Spencer Headshot"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
-                />
-              </div>
-            </a>
+            <div className="relative w-10 h-10 cursor-pointer">
+              <Image
+                src="/_next/image?url=%2Fimg%2Ftom-spencer-headshot.jpg&w=3840&q=75"
+                alt="Tom Spencer Headshot"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            </div>
           </CustomLink>
         </div>
         <nav className="flex items-center">
@@ -37,8 +35,8 @@ export default function Header() {
               { title: 'Posts', href: '/posts' },
               { title: 'Contact', href: 'mailto:tomspencerlondon@gmail.com' },
             ].map((nav) => (
-              <CustomLink href={nav.href} key={nav.title}>
-                <a className="font-semibold text-base md:text-lg link-underline">{nav.title}</a>
+              <CustomLink href={nav.href} key={nav.title} className="font-semibold text-base md:text-lg link-underline">
+                {nav.title}
               </CustomLink>
             ))}
             <ThemeToggle />
