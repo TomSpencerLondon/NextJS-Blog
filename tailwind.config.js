@@ -12,104 +12,70 @@ module.exports = {
         violet: colors.violet,
       },
       fontFamily: {
-        sans: ['Messina Sans', ...fontFamily.sans],
+        sans: ['Inter', ...fontFamily.sans],
       },
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            color: theme('colors.gray.800'),
+            color: theme('colors.white'),
             a: {
-              color: theme('colors.gray.600'),
+              color: theme('colors.white'),
               '&:hover': {
-                color: theme('colors.indigo.500'),
+                color: theme('colors.indigo.300'),
               },
-              code: { color: theme('colors.blue.400') },
+              code: { color: theme('colors.white') },
             },
-            h1: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpace.tight'),
-              color: theme('colors.gray.900'),
-            },
-            h2: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.900'),
-            },
-            h3: {
-              fontWeight: '600',
-              color: theme('colors.gray.600'),
-            },
-            'h1,h2,h3,h4': {
+            'h1,h2,h3,h4,h5,h6': {
+              color: theme('colors.white'),
               'scroll-margin-top': spacing[32],
             },
-            'h4,h5,h6': {
-              color: theme('colors.gray.900'),
+            strong: {
+              color: theme('colors.white'),
             },
             ol: {
+              color: theme('colors.white'),
               li: {
-                '&:before': { color: theme('colors.indigo.500') },
+                '&:before': { color: theme('colors.white') },
               },
             },
             ul: {
+              color: theme('colors.white'),
               li: {
-                '&:before': { backgroundColor: theme('colors.indigo.500') },
+                '&:before': { color: theme('colors.white') },
               },
             },
-            code: { color: theme('colors.rose.500') },
-            'blockquote p:first-of-type::before': false,
-            'blockquote p:last-of-type::after': false,
-          },
-        },
-        dark: {
-          css: {
-            color: theme('colors.gray.200'),
-            a: {
-              color: theme('colors.gray.300'),
-              '&:hover': {
-                color: theme('colors.gray.200'),
-              },
-              code: { color: theme('colors.blue.400') },
+            hr: {
+              borderColor: theme('colors.gray.700'),
             },
             blockquote: {
+              color: theme('colors.white'),
               borderLeftColor: theme('colors.gray.700'),
-              color: theme('colors.gray.200'),
             },
-            h1: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpace.tight'),
-              color: theme('colors.gray.200'),
+            p: {
+              color: theme('colors.white'),
             },
-            h2: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.200'),
-            },
-            h3: {
-              fontWeight: '600',
-              color: theme('colors.gray.200'),
-            },
-            'h1,h2,h3,h4': {
-              'scroll-margin-top': spacing[32],
-            },
-            hr: { borderColor: theme('colors.gray.700') },
-            ol: {
-              li: {
-                '&:before': { color: theme('colors.gray.500') },
+            table: {
+              color: theme('colors.white'),
+              tbody: {
+                tr: {
+                  borderBottomColor: theme('colors.gray.700'),
+                },
               },
-            },
-            ul: {
-              li: {
-                '&:before': { backgroundColor: theme('colors.gray.500') },
-              },
-            },
-            strong: { color: theme('colors.gray.200') },
-            thead: {
-              color: theme('colors.gray.100'),
-            },
-            tbody: {
-              tr: {
+              thead: {
+                color: theme('colors.white'),
                 borderBottomColor: theme('colors.gray.700'),
               },
+            },
+            code: {
+              color: theme('colors.white'),
+            },
+            'pre code': {
+              color: theme('colors.white'),
+              backgroundColor: 'transparent',
+            },
+            pre: {
+              color: theme('colors.white'),
+              backgroundColor: theme('colors.gray.800'),
             },
           },
         },
@@ -119,5 +85,5 @@ module.exports = {
   variants: {
     typography: ['dark'],
   },
-  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+  plugins: [require('@tailwindcss/typography')],
 };
