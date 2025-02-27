@@ -17,27 +17,27 @@ export default function PostLayout({ children, frontMatter }) {
       <article className="max-w-3xl mx-auto px-0 md:px-4 my-24">
         <BlogTitle>{frontMatter.title}</BlogTitle>
         <div className="flex flex-col md:flex-row items-center justify-between pb-4">
-          <p className="text-white">
+          <p className="text-gray-900 dark:text-white">
             Written by:{' '}
-            <CustomLink href="/about" className="text-white hover:text-indigo-300">
+            <CustomLink href="/about" className="text-gray-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-300">
               Tom Spencer
             </CustomLink>
           </p>
-          <span className="text-white italic">
+          <span className="text-gray-600 dark:text-white italic">
             {dayjs(frontMatter.publishedAt).format('MMM DD, YYYY')}
             {' — '}
             {frontMatter.readingTime.text}
           </span>
         </div>
-        <div className="prose prose-lg max-w-4xl mx-auto my-12 text-white">
+        <div className="prose prose-lg max-w-4xl mx-auto my-12 text-gray-900 dark:text-white">
           {children}
         </div>
         <div className="flex flex-row items-center justify-center text-sm space-x-4">
-          <CustomLink href={discussUrl(frontMatter.slug)} className="text-white hover:text-indigo-300">
+          <CustomLink href={discussUrl(frontMatter.slug)} className="text-gray-600 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-300">
             Discuss on Twitter
           </CustomLink>
-          <span className="text-white">•</span>
-          <CustomLink href={editUrl(frontMatter.slug)} className="text-white hover:text-indigo-300">
+          <span className="text-gray-600 dark:text-white">•</span>
+          <CustomLink href={editUrl(frontMatter.slug)} className="text-gray-600 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-300">
             Edit on GitHub
           </CustomLink>
         </div>
