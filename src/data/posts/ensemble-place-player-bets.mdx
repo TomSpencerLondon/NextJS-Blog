@@ -1,0 +1,130 @@
+---
+title: 'Diary: Ensemble TDD — Placing Player Bets against an Event-Sourced Account'
+date: '2026-07-17'
+publishedAt: '2026-07-17'
+summary: 'Notes from a mob/ensemble session wiring GameService.placePlayerBets to an event-sourced PlayerAccount — small safe steps, signature shielding, and reading the red bar.'
+slug: 'ensemble-place-player-bets'
+image: '_next/image?url=%2Fimg%2Fweb-header.jpg&w=3840&q=75'
+---
+
+#### The session
+
+This is a diary entry from an ensemble (mob) programming session on Ted M. Young's
+[`blackjack-ensemble-blue`](https://github.com/tedyoung/blackjack-ensemble-blue) codebase
+(branch [`mob-session`](https://github.com/tedyoung/blackjack-ensemble-blue/tree/mob-session)),
+run via `mob.sh` and Zoom. Participants (from the commits): Ted M. Young, Lada Kesseler,
+CodeItQuick, Daniel Ranner and me.
+
+The goal was small and precise: turn a deliberately-failing WIP test
+(`placeBetsForPlayerAccountWithInsufficientBalanceThrowsException`) green **for the right reason**,
+and start wiring `GameService.placePlayerBets(...)` to the event-sourced `PlayerAccount` — the
+money/wallet side of placing a bet.
+
+#### What we changed
+
+**1. `GameService.placePlayerBets(...)` — the smallest step to green**
+
+```java
+public void placePlayerBets(List<PlayerBet> bets) {
+    PlayerBet firstPlayerBet = bets.getFirst();
+    Optional<PlayerAccount> playerAccount =
+            playerAccountRepository.find(firstPlayerBet.playerId());
+    playerAccount.ifPresent(account -> {
+        account.bet(firstPlayerBet.bet().amount());   // throws InsufficientBalance if too low
+        playerAccountRepository.save(account);
+    });
+    currentGame.placePlayerBets(bets);
+}
+```
+
+- `find(...).ifPresent(...)` means tests with **no account** simply skip — only a *found* account
+  with too little balance throws.
+- We deliberately handle **only the first bet** (`getFirst()`) — a fake-it/smallest-step to reach
+  green before generalising to all players.
+
+**2. `GameService.createForTest(...)` — signature shielding**
+
+- `createForTest(Shuffler)` now passes a real **`new PlayerAccountRepository()`** instead of `null`.
+- Added a shielded factory `createForTest(GameMonitor, Shuffler)` so tests stop calling the raw
+  4-arg constructor. When the constructor changes, that's now one edit, not many.
+
+**3. Killing a false-green**
+
+- Aligned the IDs so the account is actually found: `withNextId(74)` + `PlayerId.of(9)` became
+  `withNextId(111)` + `PlayerId.of(111)`.
+- Made the assertion more expressive: `assertThatIllegalStateException()` became
+  `assertThatExceptionOfType(InsufficientBalance.class)`. We let the *meaningful domain exception*
+  win instead of forcing a generic one.
+
+**4. Triangulating with the next test**
+
+Un-`@Disabled`'d `placeBetsReducesPlayerAccountBalance` and seeded state **through the aggregate**:
+
+```java
+var repo = PlayerAccountRepository.withNextId(7);
+var account = PlayerAccount.register("enough money");
+account.deposit(30);
+repo.save(account);
+...
+gameService.placePlayerBets(List.of(new PlayerBet(PlayerId.of(7), Bet.of(13))));
+assertThat(repo.find(PlayerId.of(7))).get()
+        .extracting(PlayerAccount::balance).isEqualTo(30 - 13);   // 17
+```
+
+#### Where we landed
+
+This is the actual `placePlayerBets` we finished the session on, straight from
+`GameService.java` on `mob-session`:
+
+```java
+public void placePlayerBets(List<PlayerBet> bets) {
+//        if (playerAccountRepository != null) {
+        PlayerBet firstPlayerBet = bets.getFirst();
+        Optional<PlayerAccount> playerAccount = playerAccountRepository.find(firstPlayerBet.playerId());
+        playerAccount.ifPresent(account -> {
+            account.bet(firstPlayerBet.bet().amount());
+            playerAccountRepository.save(account);
+        });
+//        }
+        currentGame.placePlayerBets(bets);
+}
+```
+
+Honest snapshot: it still handles only the first bet, and the old
+`if (playerAccountRepository != null)` guard is commented out rather than deleted — both are
+deliberate stepping stones (see the follow-ups below). We stopped at a green bar with the smallest
+correct behaviour in place, which is exactly the point: leave it working, name the next step, and
+pick it up next session.
+
+#### The domain behind it
+
+`PlayerAccount` is an **event-sourced aggregate**. `register` / `deposit` / `bet` don't mutate
+fields — they **enqueue events** (`MoneyDeposited`, `MoneyBet`, `PlayerWonGame`). `apply(event)`
+folds each event into `balance`. The repository's `save()` appends the fresh events and `find()`
+**replays** them (`reconstitute`) to rebuild the account.
+
+So "placing a bet" = look up the account, append a `MoneyBet` event (which `bet()` refuses if the
+balance is too low), and save — then a later `find()` sees the reduced balance.
+
+#### What I took away
+
+1. **`null` is a hidden landmine.** It's harmless until the first code path *uses* the dependency,
+   then it's an NPE at every construction site. Shield it or supply a real/dummy value instead.
+2. **A failing test with an unexpected-but-correct result is a design cue**, not a mechanical fix.
+   The red bar showed `InsufficientBalance` where it expected `IllegalStateException` — the
+   "unexpected" exception was the *more correct* one, so we asserted it rather than dumbing the code
+   down.
+3. **Parallel change and signature shielding both use deliberate, temporary duplication** as a
+   stepping stone: expand (duplicate) → migrate callers one-by-one (stay green) → contract (delete
+   the old). Safe only if you finish by removing the duplication.
+4. **Break large refactors into small safe steps** — green before and after each step, so a red bar
+   names its own culprit.
+5. **Seed test state through the aggregate**, not by poking fields — `register` → `deposit` → `save`.
+
+#### Follow-ups
+
+- `placePlayerBets` only handles the first bet — generalise to loop all `bets` (multi-player).
+- Remove the leftover stepping-stone `null` in `createForTest(GameMonitor, Shuffler)` (the contract
+  step).
+- Wire the win/payout side — the game-over path still has `// repository.save(...)` comments and a
+  `PlayerWonGame` event waiting to be used.
