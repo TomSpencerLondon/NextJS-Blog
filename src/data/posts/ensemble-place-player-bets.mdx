@@ -96,30 +96,135 @@ deliberate stepping stones (see the follow-ups below). We stopped at a green bar
 correct behaviour in place, which is exactly the point: leave it working, name the next step, and
 pick it up next session.
 
-#### The domain behind it
+#### Signature shielding, properly
 
-`PlayerAccount` is an **event-sourced aggregate**. `register` / `deposit` / `bet` don't mutate
-fields — they **enqueue events** (`MoneyDeposited`, `MoneyBet`, `PlayerWonGame`). `apply(event)`
-folds each event into `balance`. The repository's `save()` appends the fresh events and `find()`
-**replays** them (`reconstitute`) to rebuild the account.
+The single most useful technique from the session. **Signature shielding** is the practice of
+routing tests through one creation method or builder instead of calling a production
+constructor/method directly, so that when its signature changes you fix it in **one place** rather
+than across every test.
 
-So "placing a bet" = look up the account, append a `MoneyBet` event (which `bet()` refuses if the
-balance is too low), and save — then a later `find()` sees the reduced balance.
+The live example is `createForTest`:
 
-#### What I took away
+```java
+public static GameService createForTest(Shuffler shuffler) {
+    return new GameService(game -> {}, game -> {}, shuffler, new PlayerAccountRepository());
+}
+```
 
-1. **`null` is a hidden landmine.** It's harmless until the first code path *uses* the dependency,
-   then it's an NPE at every construction site. Shield it or supply a real/dummy value instead.
-2. **A failing test with an unexpected-but-correct result is a design cue**, not a mechanical fix.
-   The red bar showed `InsufficientBalance` where it expected `IllegalStateException` — the
-   "unexpected" exception was the *more correct* one, so we asserted it rather than dumbing the code
-   down.
-3. **Parallel change and signature shielding both use deliberate, temporary duplication** as a
-   stepping stone: expand (duplicate) → migrate callers one-by-one (stay green) → contract (delete
-   the old). Safe only if you finish by removing the duplication.
-4. **Break large refactors into small safe steps** — green before and after each step, so a red bar
-   names its own culprit.
-5. **Seed test state through the aggregate**, not by poking fields — `register` → `deposit` → `save`.
+That factory is the shield. Most tests never touch the real 4-arg constructor:
+
+```java
+GameService gameService = GameService.createForTest(new StubShuffler());
+```
+
+So when the constructor grew a `PlayerAccountRepository` parameter, only `createForTest` had to
+change — the ~13 tests going through it kept compiling. And we saw the shield *fail where it wasn't
+used*: the tests that bypassed the factory and called the constructor directly...
+
+```java
+new GameService(dummyGameMonitor, repositorySpy, new StubShuffler(), null);   // not shielded
+```
+
+...were exactly the ones that broke and had to be edited one by one. Shielded tests survived the
+change; unshielded tests all had to be touched. That contrast *is* signature shielding in a
+nutshell. Note too how the factory **hides irrelevant parameters** — it passes no-op lambdas
+(`game -> {}`) for the monitor the test doesn't care about, keeping tests focused on behaviour, not
+construction plumbing.
+
+A related rule the session hammered home: **never introduce `null` when you change a signature**. A
+`null` argument is a hidden landmine — harmless until the first code path actually *uses* that
+dependency, then it's an NPE at every call site. When a signature grows a parameter, give it the
+cheapest *honest* value: a real cheap instance when the test needs it to behave
+(`new PlayerAccountRepository()`), or a no-op dummy when it doesn't (`GameMonitor game -> {}`). Both
+are honest and safe; `null` is neither.
+
+#### Small safe steps (and the big-bang cautionary tale)
+
+A step is **safe** when the tests are green before and after it. A step is **small** when, if it
+goes red, you can tell exactly why — because you only changed one thing. Together the discipline is:
+*never be more than one `git revert` away from a working system.*
+
+The cautionary tale was our own: implementing `placePlayerBets` in one leap turned ~20 tests red at
+once — a mix of NPEs and "no account" errors — and we had to reverse-engineer which part of the
+change caused which failure. The same destination reached in small steps stays green the whole way,
+and the one step that breaks names its own culprit.
+
+The named moves worth reaching for:
+
+- **Parallel change (expand → migrate → contract).** Add the new form alongside the old (both work),
+  migrate callers one at a time (green after each), then delete the old. The
+  `createForTest(shuffler)` vs `createForTest(shuffler, repo)` overloads are literally this.
+- **Branch by abstraction.** Introduce an interface over the thing you're replacing, get everyone
+  onto the interface (green), swap the implementation, delete the old — how you'd safely turn a
+  concrete `PlayerAccountRepository` into a port.
+- **Preparatory refactoring** — Kent Beck's "make the change easy (this may be hard), then make the
+  easy change."
+- **Lean on the compiler.** Make the breaking change deliberately and use the compile errors as a
+  worklist you can't miss a spot on.
+- **Prefer automated refactorings** (Rename, Extract Method, Change Signature) — behaviour-preserving
+  by construction, so always a safe step.
+
+For genuinely large refactors, the **Mikado Method** is the planner: write the goal, attempt it
+naively, and when it breaks *don't fix forward* — note the prerequisites it revealed, revert to
+green, and do those first (recursively). You end up executing a dependency graph of small steps
+leaves-first, green at every node. To drill the habit, **TCR** (`test && commit || revert`) is the
+most brutal teacher — you literally can't stay red, so steps have to be tiny.
+
+#### Duplication as a stepping stone
+
+Parallel change and signature shielding are two instances of the same shape:
+**duplicate → migrate → converge.** You stand up the new form beside the old (that coexistence *is*
+the duplication), move callers across one at a time staying green, then delete the old form so the
+duplication disappears.
+
+This isn't the "bad" DRY-violating kind of duplication — it's **intentional, temporary, and
+green-keeping**. Duplication is a smell at rest but a technique in motion; the distinction is whether
+it's on its way out. Signature shielding is just the localised, cheap version — the duplication lives
+in one helper instead of thirty call sites. The one discipline that makes it safe: you **must** take
+the contract step. A shield or overload you introduce and then leave stops being a scaffold and
+becomes real debt.
+
+#### Read the red
+
+A failing test showing an **unexpected but more correct** exception is a design cue, not a mechanical
+fix. Our red bar showed `InsufficientBalance` where the test expected `IllegalStateException` — the
+"unexpected" exception was the *more expressive domain* one, so we let it drive the code
+(`assertThatExceptionOfType(InsufficientBalance.class)`) rather than dumbing the production code down
+to throw a generic exception. Read the red closely before reacting to it.
+
+#### The domain behind it — event-sourced aggregate
+
+`PlayerAccount` is an **event-sourced aggregate**, combining two DDD ideas:
+
+- **Aggregate:** a cluster of domain objects with one consistency boundary, reached through a root
+  that guards the invariants. Nobody edits `balance` directly — they call `bet()` / `deposit()`.
+- **Event sourcing:** instead of storing current state (`balance = 5`), you store the *sequence of
+  events* (`deposited 10`, `bet 5`) and derive state by replaying them. The events are the source of
+  truth; state is a fold over them.
+
+Concretely: commands don't mutate state, they **emit events**. `bet()` validates, then enqueues a
+`MoneyBet` fact:
+
+```java
+public void bet(int amount) {
+    if (balance < amount) throw new InsufficientBalance(...);
+    enqueue(new MoneyBet(amount));      // record the fact
+}
+```
+
+`apply(event)` is the *only* place state changes — it folds each event into `balance`
+(`MoneyDeposited` → `+= amount`, `MoneyBet` → `-= amount`, `PlayerWonGame` → `+= payout`).
+`reconstitute(playerId, events)` rebuilds an aggregate from scratch by replaying its whole event
+list, and the repository stores **events, not state** — `save()` appends the fresh events, `find()`
+reads and replays them.
+
+The mental model in one line: *an event-sourced aggregate treats state as a left-fold over an
+append-only list of events — `bet()`/`deposit()` append facts, `apply()` folds them into the
+balance, and `reconstitute()` replays the whole list to rebuild the object.* That's exactly the
+machinery behind this session: `account.bet(...)` then `repository.save(account)` appends a
+`MoneyBet` event to that player's log, and the next `find()` replays it. It also explains why we
+**seed test state through the aggregate** (`register` → `deposit` → `save`) rather than poking
+fields — you set up state by supplying past events.
 
 #### Follow-ups
 
